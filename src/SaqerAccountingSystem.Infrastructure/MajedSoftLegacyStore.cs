@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 
@@ -238,6 +240,202 @@ public sealed class MajedSoftLegacyStore
             GetDecimal(rd, "Credit")), cancellationToken);
     }
 
+    public async Task<LegacyAuthenticationResult?> AuthenticateAsync(
+        string username,
+        string password,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(username) || string.IsNullOrEmpty(password))
+            return null;
+
+        const string userSql = """
+            SELECT TOP 1 ID, Name, PassWord, BranchID, GroupID, IsActive
+            FROM dbo.User_Login
+            WHERE Name = @Name
+            ORDER BY ID
+            """;
+
+        await using var cn = new SqlConnection(_connectionString);
+        await cn.OpenAsync(cancellationToken);
+
+        await using var userCmd = new SqlCommand(userSql, cn);
+        userCmd.Parameters.AddWithValue("@Name", username.Trim());
+
+        await using var rd = await userCmd.ExecuteReaderAsync(cancellationToken);
+        if (!await rd.ReadAsync(cancellationToken))
+            return null;
+
+        var user = new LegacyStoredUser(
+            GetInt(rd, "ID"),
+            GetString(rd, "Name"),
+            GetString(rd, "PassWord"),
+            GetNullableInt(rd, "BranchID"),
+            GetNullableInt(rd, "GroupID"),
+            GetBool(rd, "IsActive"));
+
+        if (!user.IsActive || !VerifyLegacyPassword(user.Password, password) || !user.GroupId.HasValue)
+            return null;
+
+        await rd.DisposeAsync();
+
+        const string groupSql = "SELECT TOP 1 ID, Name, BranchID FROM dbo.User_Groups WHERE ID=@GroupID";
+        await using var groupCmd = new SqlCommand(groupSql, cn);
+        groupCmd.Parameters.AddWithValue("@GroupID", user.GroupId.Value);
+        await using var groupRd = await groupCmd.ExecuteReaderAsync(cancellationToken);
+        if (!await groupRd.ReadAsync(cancellationToken))
+            return null;
+
+        var group = new LegacyGroupDto(
+            GetInt(groupRd, "ID"),
+            GetString(groupRd, "Name"),
+            GetNullableInt(groupRd, "BranchID"));
+
+        await groupRd.DisposeAsync();
+
+        const string screensSql = """
+            SELECT
+                s.ID,
+                s.Screen_Name,
+                s.ScreenTypeID,
+                s.ScreenNum,
+                s.ScreenTypeName,
+                s.ISShow,
+                p.Allow_Branch,
+                p.Allow_Enter,
+                p.Allow_Save,
+                p.Allow_Edit,
+                p.Allow_Delete,
+                p.Allow_Print,
+                p.Allow_Export
+            FROM dbo.User_Screens s
+            INNER JOIN dbo.User_Permission p
+                ON p.ScreenID = s.ID
+               AND p.GroupID = @GroupID
+            WHERE ISNULL(s.ISShow, 1) = 1
+            ORDER BY s.ScreenNum, s.ID
+            """;
+
+        var screens = new List<LegacyScreenAccessDto>();
+        await using var screenCmd = new SqlCommand(screensSql, cn);
+        screenCmd.Parameters.AddWithValue("@GroupID", user.GroupId.Value);
+        await using var screenRd = await screenCmd.ExecuteReaderAsync(cancellationToken);
+
+        while (await screenRd.ReadAsync(cancellationToken))
+        {
+            screens.Add(new LegacyScreenAccessDto(
+                GetInt(screenRd, "ID"),
+                GetString(screenRd, "Screen_Name"),
+                GetNullableInt(screenRd, "ScreenTypeID"),
+                GetNullableInt(screenRd, "ScreenNum"),
+                GetString(screenRd, "ScreenTypeName"),
+                GetBool(screenRd, "ISShow"),
+                GetBool(screenRd, "Allow_Branch"),
+                GetBool(screenRd, "Allow_Enter"),
+                GetBool(screenRd, "Allow_Save"),
+                GetBool(screenRd, "Allow_Edit"),
+                GetBool(screenRd, "Allow_Delete"),
+                GetBool(screenRd, "Allow_Print"),
+                GetBool(screenRd, "Allow_Export")));
+        }
+
+        var permissions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var screen in screens)
+            AddCanonicalPermissions(permissions, screen);
+
+        var userDto = new LegacyUserDto(user.Id, user.Name, user.BranchId, user.GroupId, user.IsActive);
+        return new LegacyAuthenticationResult(userDto, group, screens, permissions);
+    }
+
+    private static bool VerifyLegacyPassword(string stored, string supplied)
+    {
+        if (string.Equals(stored, supplied, StringComparison.Ordinal))
+            return true;
+
+        if (string.IsNullOrWhiteSpace(stored))
+            return false;
+
+        var input = Encoding.UTF8.GetBytes(supplied);
+
+        if (stored.Length == 32)
+        {
+            var md5 = Convert.ToHexString(MD5.HashData(input));
+            if (string.Equals(stored, md5, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        if (stored.Length == 64)
+        {
+            var sha256 = Convert.ToHexString(SHA256.HashData(input));
+            if (string.Equals(stored, sha256, StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        var base64 = Convert.ToBase64String(SHA256.HashData(input));
+        return string.Equals(stored, base64, StringComparison.Ordinal);
+    }
+
+    private static void AddCanonicalPermissions(HashSet<string> target, LegacyScreenAccessDto screen)
+    {
+        foreach (var raw in RawPermissionCodes(screen))
+            target.Add(raw);
+
+        var key = ResolveModuleKey(screen.Name);
+        if (string.IsNullOrWhiteSpace(key))
+            return;
+
+        if (screen.AllowEnter)
+            target.Add(key + ".view");
+        if (screen.AllowSave)
+            target.Add(key + ".create");
+        if (screen.AllowEdit)
+            target.Add(key + ".edit");
+        if (screen.AllowDelete)
+            target.Add(key + ".delete");
+        if (screen.AllowPrint)
+            target.Add(key + ".print");
+        if (screen.AllowExport)
+            target.Add(key + ".export");
+    }
+
+    private static IEnumerable<string> RawPermissionCodes(LegacyScreenAccessDto screen)
+    {
+        var prefix = "legacy.screen." + screen.ScreenId + ".";
+        if (screen.AllowBranch) yield return prefix + "branch";
+        if (screen.AllowEnter) yield return prefix + "enter";
+        if (screen.AllowSave) yield return prefix + "save";
+        if (screen.AllowEdit) yield return prefix + "edit";
+        if (screen.AllowDelete) yield return prefix + "delete";
+        if (screen.AllowPrint) yield return prefix + "print";
+        if (screen.AllowExport) yield return prefix + "export";
+    }
+
+    private static string ResolveModuleKey(string? screenName)
+    {
+        var name = (screenName ?? string.Empty).Trim().ToLowerInvariant();
+
+        if (ContainsAny(name, "لوحة", "الرئيسية", "dashboard", "main")) return "dashboard";
+        if (ContainsAny(name, "شركة", "شركات", "فرع", "فروع", "company", "branch")) return "companies";
+        if (ContainsAny(name, "عميل", "عملاء", "customer")) return "customers";
+        if (ContainsAny(name, "مورد", "موردين", "مورّد", "supplier")) return "suppliers";
+        if (ContainsAny(name, "صنف", "أصناف", "مادة", "مواد", "item", "product")) return "items";
+        if (ContainsAny(name, "مبيع", "مبيعات", "فاتورة بيع", "sales", "sale")) return "sales";
+        if (ContainsAny(name, "شراء", "مشتريات", "فاتورة شراء", "purchase")) return "purchases";
+        if (ContainsAny(name, "حساب", "الحسابات", "دليل", "account", "chart")) return "accounts";
+        if (ContainsAny(name, "قيد", "قيود", "يومية", "journal", "ledger")) return "journals";
+        if (ContainsAny(name, "صندوق", "بنك", "قبض", "صرف", "سداد", "payment", "cash", "bank")) return "payments";
+        if (ContainsAny(name, "مخزون", "مستودع", "مخازن", "حركة مخزون", "inventory", "stock", "warehouse")) return "inventory";
+        if (ContainsAny(name, "ضريبة", "ضريبي", "vat", "tax")) return "tax";
+        if (ContainsAny(name, "أصل ثابت", "أصول ثابتة", "fixed asset", "asset")) return "assets";
+        if (ContainsAny(name, "مركز تكلفة", "مراكز التكلفة", "cost center", "costcenter")) return "costcenters";
+        if (ContainsAny(name, "موازنة", "موازنات", "ميزانية تقديرية", "budget")) return "budgets";
+        if (ContainsAny(name, "تقرير", "تقارير", "ميزان مراجعة", "قائمة دخل", "balance sheet", "income statement", "report")) return "reports";
+        if (ContainsAny(name, "إعداد", "اعداد", "settings", "system")) return "settings";
+        return "";
+    }
+
+    private static bool ContainsAny(string value, params string[] terms)
+        => terms.Any(value.Contains);
+
     public async Task<LegacySecurityDto> GetSecurityAsync(CancellationToken cancellationToken = default)
     {
         const string usersSql = "SELECT ID, Name, BranchID, GroupID, IsActive FROM dbo.User_Login ORDER BY ID";
@@ -306,6 +504,35 @@ public sealed class MajedSoftLegacyStore
     private static DateTime? GetNullableDateTime(SqlDataReader rd, string name)
         => rd[name] == DBNull.Value ? null : Convert.ToDateTime(rd[name]);
 }
+
+public sealed record LegacyScreenAccessDto(
+    int ScreenId,
+    string Name,
+    int? ScreenTypeId,
+    int? ScreenNum,
+    string ScreenTypeName,
+    bool IsShow,
+    bool AllowBranch,
+    bool AllowEnter,
+    bool AllowSave,
+    bool AllowEdit,
+    bool AllowDelete,
+    bool AllowPrint,
+    bool AllowExport);
+
+public sealed record LegacyAuthenticationResult(
+    LegacyUserDto User,
+    LegacyGroupDto Group,
+    List<LegacyScreenAccessDto> Screens,
+    HashSet<string> Permissions);
+
+internal sealed record LegacyStoredUser(
+    int Id,
+    string Name,
+    string Password,
+    int? BranchId,
+    int? GroupId,
+    bool IsActive);
 
 public sealed record LegacyOverview(int Accounts, int Customers, int Suppliers, int Items, int Sales, int Purchases, int JournalHeaders, int Users, int Groups, int Permissions, int Screens);
 public sealed record LegacyAccountDto(int Id, int? AccountNo, string Name, string EnglishName, int? Level, int? FinalAccount, int? AccountType, int? Nature, int? BranchId, decimal PrivDebit, decimal PrivCredit, int? Suspended);
