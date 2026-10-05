@@ -510,6 +510,47 @@ app.MapPost("/api/assets", async (FixedAsset input, AccountingDbContext db, Http
     return Results.Created("/api/assets/" + input.Id, input);
 }).RequirePermission("assets.create");
 
+app.MapPost("/api/assets/{id:int}/depreciate", async (int id, DepreciationRequest request, AccountingDbContext db, HttpContext ctx) =>
+{
+    var asset = await db.FixedAssets.SingleOrDefaultAsync(x => x.Id == id && x.IsActive);
+    if (asset == null) return Results.NotFound();
+    if (asset.UsefulLifeMonths <= 0 || asset.Cost <= asset.SalvageValue)
+        return Results.BadRequest(new { message = "بيانات الإهلاك للأصل غير صالحة." });
+
+    var monthsElapsed = request.Months <= 0 ? 1 : request.Months;
+    var monthly = decimal.Round((asset.Cost - asset.SalvageValue) / asset.UsefulLifeMonths, 2);
+    var remaining = decimal.Round(asset.Cost - asset.SalvageValue - asset.AccumulatedDepreciation, 2);
+    var depreciation = decimal.Min(monthly * monthsElapsed, remaining);
+    if (depreciation <= 0) return Results.BadRequest(new { message = "لا يوجد رصيد قابل للإهلاك لهذا الأصل." });
+
+    var expense = await FindAccount(db, asset.CompanyId, "5201");
+    var accumulated = await FindAccount(db, asset.CompanyId, "1601");
+
+    var entry = new JournalEntry
+    {
+        CompanyId = asset.CompanyId,
+        BranchId = await db.Branches.Where(x => x.CompanyId == asset.CompanyId).Select(x => x.Id).FirstAsync(),
+        Number = "JE-DEP-" + asset.Code + "-" + request.Year + "-" + request.Month,
+        Date = new DateTime(request.Year, request.Month, 1),
+        Description = "إهلاك أصل " + asset.Name,
+        ReferenceType = "FixedAsset",
+        ReferenceId = asset.Id,
+        Status = DocumentStatus.Approved,
+        PostedAt = DateTime.UtcNow,
+        PostedByUserId = GetUser(ctx).Id,
+        Lines = new List<JournalLine>
+        {
+            new JournalLine { AccountId = expense.Id, Debit = depreciation, Credit = 0, Description = "مصروف إهلاك" },
+            new JournalLine { AccountId = accumulated.Id, Debit = 0, Credit = depreciation, Description = "مجمع إهلاك" }
+        }
+    };
+    asset.AccumulatedDepreciation += depreciation;
+    db.JournalEntries.Add(entry);
+    await db.SaveChangesAsync();
+    await Audit(db, ctx, "DEPRECIATE", "FixedAsset", asset.Id, asset.Name);
+    return Results.Ok(new { asset, depreciation, journal = entry.Number });
+}).RequirePermission("assets.create");
+
 app.MapGet("/api/cost-centers", async (AccountingDbContext db) => Results.Ok(await db.CostCenters.AsNoTracking().OrderBy(x => x.Code).ToListAsync()))
    .RequirePermission("costcenters.view");
 app.MapPost("/api/cost-centers", async (CostCenter input, AccountingDbContext db, HttpContext ctx) =>
@@ -715,6 +756,7 @@ public record InvoicePostRequest(bool IsPaid = false, int CashOrBankAccountId = 
 public record InventoryMovementRequest(int CompanyId, int BranchId, int ItemId, DateTime Date, decimal QuantityIn, decimal QuantityOut, decimal UnitCost = 0);
 public record PaymentCreateRequest(int CompanyId, int BranchId, string Number, DateTime Date, PartyType PartyType, int? CustomerId, int? SupplierId, int CashOrBankAccountId, decimal Amount, PaymentMethod Method, string? Description);
 public record UserCreateRequest(string Username, string FullName, string Password, int GroupId);
+public record DepreciationRequest(int Year, int Month, int Months = 1);
 public record NavItem(string Key, string Title, string Icon, string Permission, string Route);
 
 public static class PermissionEndpointExtensions
