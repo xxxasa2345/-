@@ -1,0 +1,20 @@
+# .NET Core
+bin/
+obj/
+.vscode/
+*.user
+*.suo
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.jpg
+*.png
+*.log
+
+# Rider/VS
+.idea/
+.vs/
+
+# GitHub Actions artifacts
+*.zip
