@@ -228,7 +228,7 @@ public static class LegacyEndpointExtensions
         if (string.IsNullOrWhiteSpace(token))
             return null;
 
-        var sessions = context.RequestServices.GetService<LegacySessionStore>();
+        var sessions = context.RequestServices.GetService(typeof(LegacySessionStore)) as LegacySessionStore;
         if (sessions is null || !sessions.TryGet(token, out var session))
             return null;
 
