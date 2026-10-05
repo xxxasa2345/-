@@ -46,7 +46,9 @@ public sealed class AppStore
         new ModuleInfo("costcenters","مراكز التكلفة","costcenters.view"),
         new ModuleInfo("budgets","الموازنات","budgets.view"),
         new ModuleInfo("reports","التقارير المالية","reports.view"),
-        new ModuleInfo("settings","الإعدادات","settings.view")
+        new ModuleInfo("settings","الإعدادات","settings.view"),
+        new ModuleInfo("users","المستخدمون والصلاحيات","users.manage"),
+        new ModuleInfo("legacy-screens","شاشات النظام الأصلية","dashboard.view")
     };
 
     public List<InvoiceRow> Sales { get; } = new();
