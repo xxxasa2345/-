@@ -171,8 +171,11 @@ public static class LegacyEndpointExtensions
     {
         return builder.AddEndpointFilter(async (context, next) =>
         {
-            if (context.HttpContext.Items["legacySession"] is not LegacySession)
+            var session = GetLegacySession(context.HttpContext);
+            if (session is null)
                 return Results.Unauthorized();
+
+            SetLegacySessionItems(context.HttpContext, session);
             return await next(context);
         });
     }
@@ -181,9 +184,16 @@ public static class LegacyEndpointExtensions
     {
         return builder.AddEndpointFilter(async (context, next) =>
         {
-            var current = context.HttpContext.Items["permissions"] as string[] ?? [];
-            if (!permissions.Any(permission => current.Contains(permission, StringComparer.OrdinalIgnoreCase)))
+            var session = GetLegacySession(context.HttpContext);
+            if (session is null)
+                return Results.Unauthorized();
+
+            SetLegacySessionItems(context.HttpContext, session);
+
+            if (!permissions.Any(permission =>
+                    session.Permissions.Contains(permission, StringComparer.OrdinalIgnoreCase)))
                 return Results.Forbid();
+
             return await next(context);
         });
     }
@@ -192,10 +202,44 @@ public static class LegacyEndpointExtensions
     {
         return builder.AddEndpointFilter(async (context, next) =>
         {
-            var permissions = context.HttpContext.Items["permissions"] as string[] ?? [];
-            if (!permissions.Contains(permission, StringComparer.OrdinalIgnoreCase))
+            var session = GetLegacySession(context.HttpContext);
+            if (session is null)
+                return Results.Unauthorized();
+
+            SetLegacySessionItems(context.HttpContext, session);
+
+            if (!session.Permissions.Contains(permission, StringComparer.OrdinalIgnoreCase))
                 return Results.Forbid();
+
             return await next(context);
         });
+    }
+
+    private static LegacySession? GetLegacySession(HttpContext context)
+    {
+        if (!context.Request.Headers.TryGetValue("Authorization", out var header))
+            return null;
+
+        var value = header.ToString();
+        if (!value.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+            return null;
+
+        var token = value["Bearer ".Length..].Trim();
+        if (string.IsNullOrWhiteSpace(token))
+            return null;
+
+        var sessions = context.RequestServices.GetService<LegacySessionStore>();
+        if (sessions is null || !sessions.TryGet(token, out var session))
+            return null;
+
+        return session;
+    }
+
+    private static void SetLegacySessionItems(HttpContext context, LegacySession session)
+    {
+        context.Items["legacySession"] = session;
+        context.Items["permissions"] = session.Permissions.ToArray();
+        context.Items["legacyUser"] = session.User;
+        context.Items["legacyGroup"] = session.Group;
     }
 }
