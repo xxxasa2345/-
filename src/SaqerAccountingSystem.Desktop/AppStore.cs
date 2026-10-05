@@ -264,14 +264,39 @@ public sealed class AppStore
         if (!_legacyMode)
             return GetJson("api/reports/" + kind);
 
+        if (string.Equals(kind, "trial-balance", StringComparison.OrdinalIgnoreCase))
+        {
+            var rows = Get<List<LegacyTrialBalanceRow>>("api/legacy/reports/trial-balance");
+            var totals = new
+            {
+                debit = rows.Sum(x => x.Debit),
+                credit = rows.Sum(x => x.Credit),
+                balance = rows.Sum(x => x.Balance)
+            };
+            return JsonSerializer.Serialize(new
+            {
+                mode = "legacy",
+                database = DataSourceName,
+                report = "trial-balance",
+                generatedAt = DateTime.Now,
+                totals,
+                rows
+            }, _json);
+        }
+
         var overview = Get<LegacyOverviewRow>("api/legacy/overview");
         return JsonSerializer.Serialize(new
         {
             mode = "legacy",
-            database = "GtsDb2026",
+            database = DataSourceName,
             report = kind,
             generatedAt = DateTime.Now,
-            overview
+            overview,
+            salesNet = Sales.Sum(x => x.Amount),
+            purchasesNet = Purchases.Sum(x => x.Amount),
+            salesReturns = SalesReturns.Sum(x => x.Amount),
+            purchaseReturns = PurchaseReturns.Sum(x => x.Amount),
+            treasuryRows = Payments.Count
         }, _json);
     }
 
