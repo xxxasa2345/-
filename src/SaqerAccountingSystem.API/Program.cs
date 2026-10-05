@@ -199,10 +199,13 @@ app.MapGet("/api/accounts", async (AccountingDbContext db) =>
         .ToDictionaryAsync(x => x.Key);
     return Results.Ok(accounts.Select(a =>
     {
-        var found = balances.TryGetValue(a.Id, out var b);
-        var raw = found ? b : null;
-        var balance = raw == null ? 0m :
-            a.Type is AccountType.Asset or AccountType.Expense ? raw.Debit - raw.Credit : raw.Credit - raw.Debit;
+        decimal debit = 0, credit = 0;
+        if (balances.TryGetValue(a.Id, out var totals))
+        {
+            debit = totals.Debit;
+            credit = totals.Credit;
+        }
+        var balance = a.Type is AccountType.Asset or AccountType.Expense ? debit - credit : credit - debit;
         return new { id = a.Id, code = a.Code, name = a.Name, type = a.Type.ToString(), balance };
     }));
 }).RequirePermission("accounts.view");
