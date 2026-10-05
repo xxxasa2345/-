@@ -91,10 +91,15 @@ public sealed class MajedSoftLegacyStore
     public async Task<List<LegacyPartyDto>> GetPartiesAsync(CancellationToken cancellationToken = default)
     {
         const string sql = """
-            SELECT ID, CustSuppCode, AccountNo, BranchID, CustSuppName, VatNum, Phone,
-                   IsSuppliers, IsCustomers, CreditLimit, AlarmLimit
-            FROM dbo.Account_CustSup
-            ORDER BY CustSuppCode, ID
+            SELECT p.ID, p.CustSuppCode, p.AccountNo, p.BranchID, p.CustSuppName, p.VatNum, p.Phone,
+                   p.IsSuppliers, p.IsCustomers, p.CreditLimit, p.AlarmLimit,
+                   ISNULL(SUM(d.Debit - d.Credit),0) AS Balance
+            FROM dbo.Account_CustSup p
+            LEFT JOIN dbo.Account_Accounts a ON a.Account_No = p.AccountNo
+            LEFT JOIN dbo.Tran_TranDetails d ON d.Account_Sn = a.ID
+            GROUP BY p.ID, p.CustSuppCode, p.AccountNo, p.BranchID, p.CustSuppName, p.VatNum, p.Phone,
+                     p.IsSuppliers, p.IsCustomers, p.CreditLimit, p.AlarmLimit
+            ORDER BY p.CustSuppCode, p.ID
             """;
 
         await using var cn = new SqlConnection(_connectionString);
@@ -116,7 +121,8 @@ public sealed class MajedSoftLegacyStore
                 GetBool(rd, "IsCustomers"),
                 GetBool(rd, "IsSuppliers"),
                 GetDecimal(rd, "CreditLimit"),
-                GetDecimal(rd, "AlarmLimit")));
+                GetDecimal(rd, "AlarmLimit"),
+                GetDecimal(rd, "Balance")));
         }
         return result;
     }
@@ -574,6 +580,19 @@ public sealed class MajedSoftLegacyStore
     }
 
 
+    public async Task<List<LegacyBranchDto>> GetBranchesAsync(CancellationToken cancellationToken = default)
+    {
+        const string sql = """
+            SELECT ID, Name, AccountNo, Phone, Fax, Address, Note
+            FROM dbo.Account_Branch
+            ORDER BY Name, ID
+            """;
+        return await QueryAsync(sql, rd => new LegacyBranchDto(
+            GetInt(rd, "ID"), GetString(rd, "Name"), GetNullableInt(rd, "AccountNo"),
+            GetString(rd, "Phone"), GetString(rd, "Fax"), GetString(rd, "Address"),
+            GetString(rd, "Note")), cancellationToken);
+    }
+
     public async Task<List<LegacyStoreDto>> GetStoresAsync(CancellationToken cancellationToken = default)
     {
         const string sql = """
@@ -801,7 +820,7 @@ internal sealed record LegacyStoredUser(
 
 public sealed record LegacyOverview(int Accounts, int Customers, int Suppliers, int Items, int Sales, int Purchases, int JournalHeaders, int Users, int Groups, int Permissions, int Screens);
 public sealed record LegacyAccountDto(int Id, int? AccountNo, string Name, string EnglishName, int? Level, int? FinalAccount, int? AccountType, int? Nature, int? BranchId, decimal PrivDebit, decimal PrivCredit, decimal Debit, decimal Credit, int? Suspended);
-public sealed record LegacyPartyDto(int Id, int? Code, int? AccountNo, int? BranchId, string Name, string VatNumber, string Phone, bool IsCustomer, bool IsSupplier, decimal CreditLimit, decimal AlarmLimit);
+public sealed record LegacyPartyDto(int Id, int? Code, int? AccountNo, int? BranchId, string Name, string VatNumber, string Phone, bool IsCustomer, bool IsSupplier, decimal CreditLimit, decimal AlarmLimit, decimal Balance = 0m);
 public sealed record LegacyItemDto(int Id, string Code, string Name, string EnglishName, int? CategoryId, int? ClassId, int? CompanyId, int? UnitSmall, decimal SellPriceSmall, decimal SellPriceMedium, decimal SellPriceLarge, decimal LastCost, decimal AverageCost, bool IsTax, decimal TaxValue, string VatCode);
 public sealed record LegacySalesDto(int Id, int? BranchId, int? CreditNote, int? SupplierId, string PartyName, DateTime? Date, decimal TotalPrices, decimal Tax, decimal Net, decimal Cash, decimal Bank, decimal Paid, decimal Rest, int? UserId, int? YearId, int? ProjectId, string QrCode, string ElectronicInvoiceType);
 public sealed record LegacySaleDetailDto(int InvoiceId, int ItemId, string ItemCode, string ItemName, int? StoreId, int? UnitId, decimal Quantity, decimal UnitPrice, decimal TotalPrice, decimal Vat, decimal NetTotalPrice);
@@ -822,3 +841,5 @@ public sealed record LegacyTreasuryDto(int TranId, string DocCode, DateTime? Dat
 public sealed record LegacyTaxSummaryDto(string VatCode, decimal Rate, int ItemCount);
 public sealed record LegacyReturnDto(int Id, int? BranchId, int? BranchDocumentId, int? FromPurchaseId, int? CreditNote, int? SupplierId, string SupplierName, DateTime? Date, int? PaymentType, int? CostCenterId, string Note, string NoteNum, decimal CostAverage, decimal Tax, decimal TotalPrices, decimal Safy, decimal Discount, decimal DiscountPercent, decimal TaxDiscount, decimal TotalAfterDiscount, decimal TobaccoTax, decimal AllTax, decimal Net, decimal Cash, decimal Bank, int? ProjectId, int? YearId, bool IsPurchaseReturn);
 public sealed record LegacyTrialBalanceDto(int Id, int? AccountNo, string AccountName, decimal Debit, decimal Credit, decimal Balance);
+
+public sealed record LegacyBranchDto(int Id, string Name, int? AccountNo, string Phone, string Fax, string Address, string Note);
