@@ -51,6 +51,8 @@ public sealed class AppStore
     public List<InvoiceRow> Purchases { get; } = new();
     public List<ItemRow> Items { get; } = new();
     public List<CustomerRow> Customers { get; } = new();
+    public List<SupplierRow> Suppliers { get; } = new();
+    public List<CompanyRow> Companies { get; } = new();
     public List<AccountRow> Accounts { get; } = new();
     public List<PaymentRow> Payments { get; } = new();
     public List<JournalRow> Journals { get; } = new();
@@ -110,6 +112,12 @@ public sealed class AppStore
         var customers = Get<List<CustomerRow>>("api/customers");
         Customers.Clear(); Customers.AddRange(customers);
 
+        var suppliers = Get<List<SupplierRow>>("api/suppliers");
+        Suppliers.Clear(); Suppliers.AddRange(suppliers);
+
+        var companies = Get<List<CompanyRow>>("api/companies");
+        Companies.Clear(); Companies.AddRange(companies);
+
         var accounts = Get<List<AccountRow>>("api/accounts");
         Accounts.Clear(); Accounts.AddRange(accounts);
 
@@ -156,3 +164,6 @@ public sealed record AccountRow(int Id, string Code, string Name, string Type, d
 public sealed record PaymentRow(long Id, string Number, string PartyType, decimal Amount, string Method, DateTime Date);
 public sealed record JournalRow(long Id, string Number, DateTime Date, string Description, string Status);
 public sealed record InventoryRow(long Id, int ItemId, DateTime Date, decimal QuantityIn, decimal QuantityOut, decimal UnitCost);
+
+public sealed record SupplierRow(int Id, string Code, string Name, string Phone, decimal Balance);
+public sealed record CompanyRow(int Id, string Code, string Name, string TaxNumber, string Currency, bool IsActive);
