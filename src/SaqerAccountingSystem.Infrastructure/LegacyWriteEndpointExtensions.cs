@@ -43,6 +43,7 @@ public static class LegacyWriteEndpointExtensions
 
             var session = GetLegacySession(ctx);
             if (session is null) return Results.Unauthorized();
+            var store = new MajedSoftLegacyWriteStore(config);
 
             try
             {
@@ -64,6 +65,7 @@ public static class LegacyWriteEndpointExtensions
 
             var session = GetLegacySession(ctx);
             if (session is null) return Results.Unauthorized();
+            var store = new MajedSoftLegacyWriteStore(config);
 
             try
             {
