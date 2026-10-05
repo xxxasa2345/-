@@ -41,10 +41,13 @@ public sealed class AppStore
         new ModuleInfo("items","الأصناف","items.view"),
         new ModuleInfo("sales","المبيعات","sales.view"),
         new ModuleInfo("purchases","المشتريات","purchases.view"),
+        new ModuleInfo("sales-returns","مرتجعات المبيعات","sales.view"),
+        new ModuleInfo("purchase-returns","مرتجعات المشتريات","purchases.view"),
         new ModuleInfo("accounts","دليل الحسابات","accounts.view"),
         new ModuleInfo("journals","القيود والأستاذ العام","journals.view"),
         new ModuleInfo("payments","الخزينة والبنوك","payments.view"),
         new ModuleInfo("inventory","المخزون","inventory.view"),
+        new ModuleInfo("stores","المخازن","items.view"),
         new ModuleInfo("tax","الضريبة","tax.view"),
         new ModuleInfo("assets","الأصول الثابتة","assets.view"),
         new ModuleInfo("costcenters","مراكز التكلفة","costcenters.view"),
@@ -66,6 +69,10 @@ public sealed class AppStore
     public List<PaymentRow> Payments { get; } = new();
     public List<JournalRow> Journals { get; } = new();
     public List<InventoryRow> Inventory { get; } = new();
+    public List<StockBalanceRow> StockBalances { get; } = new();
+    public List<StoreRow> Stores { get; } = new();
+    public List<InvoiceRow> SalesReturns { get; } = new();
+    public List<InvoiceRow> PurchaseReturns { get; } = new();
     public List<TaxRow> Taxes { get; } = new();
     public List<AssetRow> Assets { get; } = new();
     public List<CostCenterRow> CostCenters { get; } = new();
@@ -334,6 +341,10 @@ public sealed class AppStore
         Payments.Clear();
         Journals.Clear();
         Inventory.Clear();
+        StockBalances.Clear();
+        Stores.Clear();
+        SalesReturns.Clear();
+        PurchaseReturns.Clear();
         Taxes.Clear();
         Assets.Clear();
         CostCenters.Clear();
@@ -394,6 +405,61 @@ public sealed class AppStore
             Journals.AddRange(rows.Select(x =>
                 new JournalRow(x.Id, x.DocCode ?? x.Id.ToString(), x.Date ?? DateTime.MinValue, x.Note, "Legacy")));
         }
+
+        if (HasPermission("items.view"))
+        {
+            var rows = TryGet<List<LegacyStoreDto>>("api/legacy/stores") ?? new();
+            Stores.AddRange(rows.Select(x =>
+                new StoreRow(x.Id, x.Name, x.BranchId, x.Address, x.Phone)));
+        }
+
+        if (HasPermission("inventory.view"))
+        {
+            var rows = TryGet<List<LegacyStockBalanceDto>>("api/legacy/stock-balances") ?? new();
+            StockBalances.AddRange(rows.Select(x =>
+                new StockBalanceRow(x.ItemId, x.ItemCode, x.ItemName, x.StoreId, x.StoreName, x.CurrentBalance, x.UnitNumber)));
+        }
+
+        if (HasPermission("payments.view"))
+        {
+            var rows = TryGet<List<LegacyTreasuryDto>>("api/legacy/treasury") ?? new();
+            Payments.AddRange(rows.Select(x =>
+                new PaymentRow(x.TranId, x.DocCode, x.AccountName,
+                    Math.Abs(x.Debit - x.Credit),
+                    x.Debit >= x.Credit ? "قبض" : "صرف",
+                    x.Date ?? DateTime.MinValue)));
+        }
+
+        if (HasPermission("tax.view"))
+        {
+            var rows = TryGet<List<LegacyTaxSummaryDto>>("api/legacy/tax-summary") ?? new();
+            var nextId = 1;
+            Taxes.AddRange(rows.Select(x =>
+                new TaxRow(nextId++, x.VatCode, "ضريبة " + x.VatCode, x.Rate, true, true, true)));
+        }
+
+        if (HasPermission("costcenters.view"))
+        {
+            var rows = TryGet<List<LegacyCostCenterDto>>("api/legacy/cost-centers") ?? new();
+            CostCenters.AddRange(rows.Select(x =>
+                new CostCenterRow(x.Id ?? x.Sn, (x.Number ?? x.Id ?? x.Sn).ToString(), x.Name, !x.Hidden)));
+        }
+
+        if (HasPermission("sales.view"))
+        {
+            var rows = TryGet<List<LegacyReturnDto>>("api/legacy/sales-returns") ?? new();
+            SalesReturns.AddRange(rows.Select(x =>
+                new InvoiceRow(x.Id, x.Id.ToString(), x.SupplierName,
+                    x.Date ?? DateTime.MinValue, x.Net, "مرتجع مبيعات")));
+        }
+
+        if (HasPermission("purchases.view"))
+        {
+            var rows = TryGet<List<LegacyReturnDto>>("api/legacy/purchase-returns") ?? new();
+            PurchaseReturns.AddRange(rows.Select(x =>
+                new InvoiceRow(x.Id, x.Id.ToString(), x.SupplierName,
+                    x.Date ?? DateTime.MinValue, x.Net, "مرتجع مشتريات")));
+        }
     }
 
     public List<LegacyScreenAccess> GetLegacyScreens() => LegacyScreens;
@@ -415,6 +481,9 @@ public sealed class AppStore
 
     public LegacyWriteResultRow CreateLegacyJournal(LegacyJournalWriteClientRequest request)
         => Post<LegacyWriteResultRow>("api/legacy/journals", request);
+
+    public List<LegacyTrialBalanceRow> GetLegacyTrialBalance()
+        => Get<List<LegacyTrialBalanceRow>>("api/legacy/reports/trial-balance");
 
     private readonly List<LegacyScreenAccess> LegacyScreens = new();
 
@@ -574,3 +643,7 @@ public sealed record DashboardSummary(List<MetricRow> Cards, List<DashboardInvoi
 public sealed record MetricRow(string Key, string Title, decimal Value, decimal Trend);
 public sealed record DashboardInvoiceRow(string Number, string Party, string Date, decimal Amount, string Status);
 public sealed record DashboardActivityRow(DateTime Time, string Text, string Type);
+
+public sealed record StoreRow(int Id, string Name, int? BranchId, string Address, string Phone);
+public sealed record StockBalanceRow(int ItemId, string ItemCode, string ItemName, int StoreId, string StoreName, decimal CurrentBalance, decimal UnitNumber);
+public sealed record LegacyTrialBalanceRow(int Id, int? AccountNo, string AccountName, decimal Debit, decimal Credit, decimal Balance);
