@@ -26,6 +26,7 @@ public sealed class AppStore
     {
         var url = Environment.GetEnvironmentVariable("SAQER_API_URL") ?? LoadApiUrl();
         _http = new HttpClient { BaseAddress = new Uri(url.TrimEnd('/') + "/"), Timeout = TimeSpan.FromSeconds(30) };
+        LoadOriginalScreens();
     }
 
     public IReadOnlyList<ModuleInfo> Modules { get; } = new[]
@@ -65,6 +66,34 @@ public sealed class AppStore
     public List<AssetRow> Assets { get; } = new();
     public List<CostCenterRow> CostCenters { get; } = new();
     public List<BudgetRow> Budgets { get; } = new();
+    public List<GtsScreenInfo> OriginalScreens { get; } = new();
+
+
+    private void LoadOriginalScreens()
+    {
+        try
+        {
+            var path = Path.Combine(AppContext.BaseDirectory, "gts-original-screens.json");
+            if (!File.Exists(path)) return;
+
+            using var document = JsonDocument.Parse(File.ReadAllText(path));
+            if (!document.RootElement.TryGetProperty("screens", out var screens)) return;
+
+            OriginalScreens.Clear();
+            foreach (var item in screens.EnumerateArray())
+            {
+                OriginalScreens.Add(new GtsScreenInfo(
+                    item.GetProperty("screen").GetString() ?? "",
+                    item.GetProperty("namespace").GetString() ?? "",
+                    item.GetProperty("file").GetString() ?? "",
+                    item.TryGetProperty("controls", out var controls) ? controls.GetInt32() : 0));
+            }
+        }
+        catch
+        {
+            OriginalScreens.Clear();
+        }
+    }
 
     private static string LoadApiUrl()
     {
@@ -443,6 +472,8 @@ public sealed class AppStore
 public sealed record LegacySaleDetailRow(int InvoiceId, int ItemId, string ItemCode, string ItemName, int? StoreId, int? UnitId, decimal Quantity, decimal UnitPrice, decimal TotalPrice, decimal Vat, decimal NetTotalPrice);
 public sealed record LegacyPurchaseDetailRow(int InvoiceId, int ItemId, string ItemCode, string ItemName, int? StoreId, int? UnitId, decimal Quantity, decimal UnitPrice, decimal TotalPrice, decimal Vat, decimal NetTotalPrice);
 public sealed record LegacyAccountLedgerRow(int TranId, string DocCode, DateTime? Date, string Note, string Description, decimal Debit, decimal Credit, int? CostCenterId, int? BranchId);
+
+public sealed record GtsScreenInfo(string Screen, string Namespace, string File, int Controls);
 
 public sealed record LegacyScreenAccess(
     int ScreenId, string Name, int? ScreenTypeId, int? ScreenNum, string ScreenTypeName,
