@@ -117,6 +117,9 @@ public sealed class AppStore
                 ? screenNode.EnumerateArray().Select(ParseLegacyScreen).ToList()
                 : new List<LegacyScreenAccess>();
 
+            LegacyScreens.Clear();
+            LegacyScreens.AddRange(screens);
+
             _legacyMode = true;
             CurrentPermissions = permissions;
             Refresh();
@@ -162,6 +165,7 @@ public sealed class AppStore
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             _legacyMode = false;
+            LegacyScreens.Clear();
             CurrentPermissions = permissions;
             Refresh();
 
@@ -353,6 +357,19 @@ public sealed class AppStore
         }
     }
 
+    public List<LegacyScreenAccess> GetLegacyScreens() => LegacyScreens;
+
+    public List<LegacySaleDetailRow> GetLegacySaleDetails(int id)
+        => Get<List<LegacySaleDetailRow>>("api/legacy/sales/" + id + "/details");
+
+    public List<LegacyPurchaseDetailRow> GetLegacyPurchaseDetails(int id)
+        => Get<List<LegacyPurchaseDetailRow>>("api/legacy/purchases/" + id + "/details");
+
+    public List<LegacyAccountLedgerRow> GetLegacyAccountLedger(int id)
+        => Get<List<LegacyAccountLedgerRow>>("api/legacy/accounts/" + id + "/ledger");
+
+    private readonly List<LegacyScreenAccess> LegacyScreens = new();
+
     public bool HasPermission(string permission)
         => CurrentPermissions.Contains(permission, StringComparer.OrdinalIgnoreCase);
 
@@ -420,6 +437,10 @@ public sealed class AppStore
         catch { return null; }
     }
 }
+
+public sealed record LegacySaleDetailRow(int InvoiceId, int ItemId, string ItemCode, string ItemName, int? StoreId, int? UnitId, decimal Quantity, decimal UnitPrice, decimal TotalPrice, decimal Vat, decimal NetTotalPrice);
+public sealed record LegacyPurchaseDetailRow(int InvoiceId, int ItemId, string ItemCode, string ItemName, int? StoreId, int? UnitId, decimal Quantity, decimal UnitPrice, decimal TotalPrice, decimal Vat, decimal NetTotalPrice);
+public sealed record LegacyAccountLedgerRow(int TranId, string DocCode, DateTime? Date, string Note, string Description, decimal Debit, decimal Credit, int? CostCenterId, int? BranchId);
 
 public sealed record LegacyScreenAccess(
     int ScreenId, string Name, int? ScreenTypeId, int? ScreenNum, string ScreenTypeName,
