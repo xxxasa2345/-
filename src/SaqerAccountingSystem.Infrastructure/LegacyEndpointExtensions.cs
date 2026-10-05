@@ -87,7 +87,11 @@ public static class LegacyEndpointExtensions
 
         group.MapGet("/parties", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetPartiesAsync(ct)))
-            .RequireLegacyPermission("customers.view");
+            .RequireLegacyAnyPermission("customers.view", "suppliers.view");
+
+        group.MapGet("/branches", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetBranchesAsync(ct)))
+            .RequireLegacyPermission("companies.view");
 
         group.MapGet("/items", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetItemsAsync(ct)))
@@ -169,6 +173,17 @@ public static class LegacyEndpointExtensions
         {
             if (context.HttpContext.Items["legacySession"] is not LegacySession)
                 return Results.Unauthorized();
+            return await next(context);
+        });
+    }
+
+    private static RouteHandlerBuilder RequireLegacyAnyPermission(this RouteHandlerBuilder builder, params string[] permissions)
+    {
+        return builder.AddEndpointFilter(async (context, next) =>
+        {
+            var current = context.HttpContext.Items["permissions"] as string[] ?? [];
+            if (!permissions.Any(permission => current.Contains(permission, StringComparer.OrdinalIgnoreCase)))
+                return Results.Forbid();
             return await next(context);
         });
     }
