@@ -153,7 +153,7 @@ internal sealed class LegacyInvoiceForm : Form
             if (_item.SelectedItem is ItemRow item)
             {
                 _price.Value = Clamp(item.SalePrice);
-                _vat.Value = Clamp(15m);
+                _vat.Value = Clamp(item.TaxRate);
             }
         };
     }
@@ -270,7 +270,7 @@ internal sealed class LegacyInvoiceForm : Form
 
             var partyId = _party.SelectedItem is SupplierRow s ? s.Id :
                           _party.SelectedItem is CustomerRow c ? c.Id : (int?)null;
-            var branch = _user.LegacyScreens.Count > 0 ? FindBranchFromScreens() : 1;
+            var branch = _store.CurrentLegacyBranchId > 0 ? _store.CurrentLegacyBranchId : 1;
             var paymentType = _payment.SelectedItem is PaymentChoice p ? p.Id : 1;
             var mainAccount = SelectedId(_mainAccount);
             var vatAccount = SelectedId(_vatAccount);
@@ -304,8 +304,6 @@ internal sealed class LegacyInvoiceForm : Form
     }
 
     private ItemRow? FindItem(int id) => _store.Items.FirstOrDefault(x => x.Id == id);
-
-    private int FindBranchFromScreens() => 1;
 
     private int SelectedId(ComboBox combo)
         => combo.SelectedValue is int id ? id : combo.SelectedItem is AccountRow a ? a.Id : 0;
