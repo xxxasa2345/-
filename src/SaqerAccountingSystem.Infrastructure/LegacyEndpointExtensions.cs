@@ -121,6 +121,38 @@ public static class LegacyEndpointExtensions
             Results.Ok(await store.GetSecurityAsync(ct)))
             .RequireLegacyPermission("users.manage");
 
+        group.MapGet("/stores", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetStoresAsync(ct)))
+            .RequireLegacyPermission("items.view");
+
+        group.MapGet("/cost-centers", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetCostCentersAsync(ct)))
+            .RequireLegacyPermission("costcenters.view");
+
+        group.MapGet("/stock-balances", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetStockBalancesAsync(ct)))
+            .RequireLegacyPermission("inventory.view");
+
+        group.MapGet("/treasury", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetTreasuryAsync(ct)))
+            .RequireLegacyPermission("payments.view");
+
+        group.MapGet("/tax-summary", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetTaxSummaryAsync(ct)))
+            .RequireLegacyPermission("tax.view");
+
+        group.MapGet("/sales-returns", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetSalesReturnsAsync(ct)))
+            .RequireLegacyPermission("sales.view");
+
+        group.MapGet("/purchase-returns", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetPurchaseReturnsAsync(ct)))
+            .RequireLegacyPermission("purchases.view");
+
+        group.MapGet("/reports/trial-balance", async (MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetTrialBalanceAsync(ct)))
+            .RequireLegacyPermission("reports.view");
+
         group.MapGet("/health", async (MajedSoftLegacyStore store, CancellationToken ct) =>
         {
             var overview = await store.GetOverviewAsync(ct);
