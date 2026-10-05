@@ -360,7 +360,7 @@ public sealed class AppStore
         {
             var rows = TryGet<List<LegacyItemRow>>("api/legacy/items") ?? new();
             Items.AddRange(rows.Select(x => new ItemRow(
-                x.Id, x.Code, x.Name, x.AverageCost, x.SellPriceSmall)));
+                x.Id, x.Code, x.Name, x.AverageCost, x.SellPriceSmall, x.UnitSmall)));
         }
 
         if (HasPermission("customers.view") || HasPermission("suppliers.view"))
@@ -548,7 +548,7 @@ public sealed record LegacyJournalRow(
     int? BranchId, int? UserId, int? YearId, int? ProjectId, decimal Debit, decimal Credit);
 
 public sealed record InvoiceRow(long Id, string Number, string Party, DateTime Date, decimal Amount, string Status);
-public sealed record ItemRow(int Id, string Code, string Name, decimal StockQuantity, decimal SalePrice);
+public sealed record ItemRow(int Id, string Code, string Name, decimal StockQuantity, decimal SalePrice, int? UnitSmall = null);
 public sealed record CustomerRow(int Id, string Code, string Name, string Phone, decimal Balance);
 public sealed record AccountRow(int Id, string Code, string Name, string Type, decimal Balance);
 public sealed record PaymentRow(long Id, string Number, string PartyType, decimal Amount, string Method, DateTime Date);
