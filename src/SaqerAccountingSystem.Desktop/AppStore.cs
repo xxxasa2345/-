@@ -21,6 +21,7 @@ public sealed class AppStore
     private readonly JsonSerializerOptions _json = new(JsonSerializerDefaults.Web);
     private string _token = "";
     private bool _legacyMode;
+    public int CurrentLegacyBranchId { get; private set; }
 
     public AppStore()
     {
@@ -153,6 +154,9 @@ public sealed class AppStore
             LegacyScreens.AddRange(screens);
 
             _legacyMode = true;
+            CurrentLegacyBranchId = user.TryGetProperty("branchId", out var branchNode) && branchNode.ValueKind != JsonValueKind.Null
+                ? branchNode.GetInt32()
+                : 0;
             CurrentPermissions = permissions;
             Refresh();
 
@@ -197,6 +201,7 @@ public sealed class AppStore
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
             _legacyMode = false;
+            CurrentLegacyBranchId = 0;
             LegacyScreens.Clear();
             CurrentPermissions = permissions;
             Refresh();
@@ -360,7 +365,7 @@ public sealed class AppStore
         {
             var rows = TryGet<List<LegacyItemRow>>("api/legacy/items") ?? new();
             Items.AddRange(rows.Select(x => new ItemRow(
-                x.Id, x.Code, x.Name, x.AverageCost, x.SellPriceSmall, x.UnitSmall)));
+                x.Id, x.Code, x.Name, x.AverageCost, x.SellPriceSmall, x.UnitSmall, x.IsTax ? x.TaxValue : 0m)));
         }
 
         if (HasPermission("customers.view") || HasPermission("suppliers.view"))
@@ -548,7 +553,7 @@ public sealed record LegacyJournalRow(
     int? BranchId, int? UserId, int? YearId, int? ProjectId, decimal Debit, decimal Credit);
 
 public sealed record InvoiceRow(long Id, string Number, string Party, DateTime Date, decimal Amount, string Status);
-public sealed record ItemRow(int Id, string Code, string Name, decimal StockQuantity, decimal SalePrice, int? UnitSmall = null);
+public sealed record ItemRow(int Id, string Code, string Name, decimal StockQuantity, decimal SalePrice, int? UnitSmall = null, decimal TaxRate = 0m);
 public sealed record CustomerRow(int Id, string Code, string Name, string Phone, decimal Balance);
 public sealed record AccountRow(int Id, string Code, string Name, string Type, decimal Balance);
 public sealed record PaymentRow(long Id, string Number, string PartyType, decimal Amount, string Method, DateTime Date);
