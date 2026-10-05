@@ -635,7 +635,7 @@ public sealed record LegacyAccountRow(
     decimal Debit, decimal Credit, int? Suspended);
 public sealed record LegacyPartyRow(
     int Id, int? Code, int? AccountNo, int? BranchId, string Name, string VatNumber, string Phone,
-    bool IsCustomer, bool IsSupplier, decimal CreditLimit, decimal AlarmLimit);
+    bool IsCustomer, bool IsSupplier, decimal CreditLimit, decimal AlarmLimit, decimal Balance = 0m);
 
 public sealed record LegacyItemRow(
     int Id, string Code, string Name, string EnglishName, int? CategoryId, int? ClassId,
@@ -677,6 +677,15 @@ public sealed record DashboardSummary(List<MetricRow> Cards, List<DashboardInvoi
 public sealed record MetricRow(string Key, string Title, decimal Value, decimal Trend);
 public sealed record DashboardInvoiceRow(string Number, string Party, string Date, decimal Amount, string Status);
 public sealed record DashboardActivityRow(DateTime Time, string Text, string Type);
+
+
+public sealed record LegacyBranchDto(int Id, string Name, int? AccountNo, string Phone, string Fax, string Address, string Note);
+public sealed record LegacyStoreDto(int Id, string Name, int? BranchId, string Address, string Phone, string Fax);
+public sealed record LegacyStockBalanceDto(int ItemId, string ItemCode, string ItemName, int StoreId, string StoreName, decimal CurrentBalance, decimal UnitNumber);
+public sealed record LegacyTreasuryDto(int TranId, string DocCode, DateTime? Date, int AccountId, string AccountName, decimal Debit, decimal Credit, string Note);
+public sealed record LegacyTaxSummaryDto(string VatCode, decimal Rate, int ItemCount);
+public sealed record LegacyCostCenterDto(int Sn, int? Id, int? Number, string Name, int? MainId, decimal PrivDebit, decimal PrivCredit, int? BranchId, bool Hidden, bool Default);
+public sealed record LegacyReturnDto(int Id, int? BranchId, int? BranchDocumentId, int? FromPurchaseId, int? CreditNote, int? SupplierId, string SupplierName, DateTime? Date, int? PaymentType, int? CostCenterId, string Note, string NoteNum, decimal CostAverage, decimal Tax, decimal TotalPrices, decimal Safy, decimal Discount, decimal DiscountPercent, decimal TaxDiscount, decimal TotalAfterDiscount, decimal TobaccoTax, decimal AllTax, decimal Net, decimal Cash, decimal Bank, int? ProjectId, int? YearId, bool IsPurchaseReturn);
 
 public sealed record StoreRow(int Id, string Name, int? BranchId, string Address, string Phone);
 public sealed record StockBalanceRow(int ItemId, string ItemCode, string ItemName, int StoreId, string StoreName, decimal CurrentBalance, decimal UnitNumber);
