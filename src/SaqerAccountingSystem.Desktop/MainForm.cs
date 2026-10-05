@@ -580,7 +580,7 @@ public sealed class MainForm : Form
     }
 
     private static string Csv(string value)
-        => """ + value.Replace(""", """") + """;
+        => "\"" + value.Replace("\"", "\"\"") + "\"";
 
     private Control Settings()
     {
