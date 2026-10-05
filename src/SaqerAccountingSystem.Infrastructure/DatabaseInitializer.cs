@@ -22,6 +22,7 @@ public static class DatabaseInitializer
             new Account { CompanyId = company.Id, Code = "1102", Name = "البنوك", Type = AccountType.Asset, IsControlAccount = true },
             new Account { CompanyId = company.Id, Code = "1201", Name = "العملاء", Type = AccountType.Asset, IsControlAccount = true },
             new Account { CompanyId = company.Id, Code = "1301", Name = "المخزون", Type = AccountType.Asset, IsControlAccount = true },
+            new Account { CompanyId = company.Id, Code = "1601", Name = "مجمع إهلاك الأصول", Type = AccountType.Asset, IsControlAccount = true },
             new Account { CompanyId = company.Id, Code = "2101", Name = "الموردون", Type = AccountType.Liability, IsControlAccount = true },
             new Account { CompanyId = company.Id, Code = "2201", Name = "ضريبة القيمة المضافة", Type = AccountType.Liability, IsControlAccount = true },
             new Account { CompanyId = company.Id, Code = "3101", Name = "رأس المال", Type = AccountType.Equity, IsControlAccount = true },
@@ -50,7 +51,7 @@ public static class DatabaseInitializer
             "accounts.view","accounts.create","accounts.edit","sales.view","sales.create","sales.post",
             "purchases.view","purchases.create","purchases.post","journals.view","journals.create","journals.post",
             "inventory.view","inventory.create","payments.view","payments.create","tax.view","tax.create",
-            "assets.view","assets.create","costcenters.view","costcenters.create","budgets.view","budgets.create",
+            "assets.view","assets.create","assets.post","costcenters.view","costcenters.create","budgets.view","budgets.create",
             "reports.view","settings.view","users.manage","audit.view"
         };
         foreach (var code in permissions) db.Permissions.Add(new Permission { Code = code, Name = code });
