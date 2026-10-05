@@ -1,0 +1,2220 @@
+{
+  "source": "GTS ERP original screen design report",
+  "screenCount": 369,
+  "screens": [
+    {
+      "screen": "ContractTerms",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\ContractTerms.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmAbout",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmAbout.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmAccountPayroll",
+      "namespace": "GTSErpSystem.Frms.Payroll.Search",
+      "file": "Frms\\Payroll\\Search\\FrmAccountPayroll.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmAccountTree",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmAccountTree.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmActivation",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmActivation.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmActivtion",
+      "namespace": "GTSErpSystem",
+      "file": "FrmActivtion.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmActivtion3",
+      "namespace": "GTSErpSystem",
+      "file": "FrmActivtion3.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmAdd",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant.LuckUp",
+      "file": "Frms\\FrmRestaurant\\LuckUp\\FrmAdd.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmAllContract",
+      "namespace": "GTSErpSystem.Frms.Contract.Report",
+      "file": "Frms\\Contract\\Report\\FrmAllContract.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllContractActiveDisActive",
+      "namespace": "GTSErpSystem.Frms.Contract.Report",
+      "file": "Frms\\Contract\\Report\\FrmAllContractActiveDisActive.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllContractByCostomer",
+      "namespace": "GTSErpSystem.Frms.Contract.Report",
+      "file": "Frms\\Contract\\Report\\FrmAllContractByCostomer.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllGuarantee",
+      "namespace": "GTSErpSystem.Frms.Contract.Report",
+      "file": "Frms\\Contract\\Report\\FrmAllGuarantee.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrders",
+      "namespace": "GTSErpSystem.Frms.Reports.SalesMan",
+      "file": "Frms\\Reports\\SalesMan\\FrmAllOrders.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrders",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrders.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrdersBounce",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersBounce.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersBounceDetails",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersBounceDetails.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersCashierSafryMahly",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersCashierSafryMahly.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersCheckOut",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersCheckOut.cs",
+      "controls": 5
+    },
+    {
+      "screen": "FrmAllOrdersDetails",
+      "namespace": "GTSErpSystem.Frms.Reports.SalesMan",
+      "file": "Frms\\Reports\\SalesMan\\FrmAllOrdersDetails.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrdersDetails",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersDetails.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrdersDetailsByGroup",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersDetailsByGroup.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersDetailsByProperties",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersDetailsByProperties.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersHold",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersHold.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersProfit",
+      "namespace": "GTSErpSystem.Frms.Reports.Profit",
+      "file": "Frms\\Reports\\Profit\\FrmAllOrdersProfit.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrdersProfit",
+      "namespace": "GTSErpSystem.Frms.Reports.SalesMan",
+      "file": "Frms\\Reports\\SalesMan\\FrmAllOrdersProfit.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrdersProfitByGroup",
+      "namespace": "GTSErpSystem.Frms.Reports.Profit",
+      "file": "Frms\\Reports\\Profit\\FrmAllOrdersProfitByGroup.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersProfitByGroupBy",
+      "namespace": "GTSErpSystem.Frms.Reports.SalesMan",
+      "file": "Frms\\Reports\\SalesMan\\FrmAllOrdersProfitByGroupBy.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersProfitByItems",
+      "namespace": "GTSErpSystem.Frms.Reports.Profit",
+      "file": "Frms\\Reports\\Profit\\FrmAllOrdersProfitByItems.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersProfitByItems_ItemOnly",
+      "namespace": "GTSErpSystem.Frms.Reports.Profit",
+      "file": "Frms\\Reports\\Profit\\FrmAllOrdersProfitByItems_ItemOnly.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrdersProfitByItems_ItemOnly",
+      "namespace": "GTSErpSystem.Frms.Reports.SalesMan",
+      "file": "Frms\\Reports\\SalesMan\\FrmAllOrdersProfitByItems_ItemOnly.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrdersProfitCashierSafryMahly",
+      "namespace": "GTSErpSystem.Frms.Reports.Profit",
+      "file": "Frms\\Reports\\Profit\\FrmAllOrdersProfitCashierSafryMahly.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersRestaurant",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersRestaurant.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllOrdersReturnDetails",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrdersReturnDetails.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrdersReturnDetails",
+      "namespace": "GTSErpSystem.Frms.Reports.SalesMan",
+      "file": "Frms\\Reports\\SalesMan\\FrmAllOrdersReturnDetails.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrederReturn",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllOrederReturn.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllOrederReturn",
+      "namespace": "GTSErpSystem.Frms.Reports.SalesMan",
+      "file": "Frms\\Reports\\SalesMan\\FrmAllOrederReturn.cs",
+      "controls": 12
+    },
+    {
+      "screen": "FrmAllowances",
+      "namespace": "GTSErpSystem.Frms.Payroll",
+      "file": "Frms\\Payroll\\FrmAllowances.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmAllPrinters",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmAllPrinters.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmAllPurches",
+      "namespace": "GTSErpSystem.Frms.Reports.Purches",
+      "file": "Frms\\Reports\\Purches\\FrmAllPurches.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllPurchesDetails",
+      "namespace": "GTSErpSystem.Frms.Reports.Purches",
+      "file": "Frms\\Reports\\Purches\\FrmAllPurchesDetails.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllPurchesReturn",
+      "namespace": "GTSErpSystem.Frms.Reports.Purches",
+      "file": "Frms\\Reports\\Purches\\FrmAllPurchesReturn.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllPurchesReturnDetails",
+      "namespace": "GTSErpSystem.Frms.Reports.Purches",
+      "file": "Frms\\Reports\\Purches\\FrmAllPurchesReturnDetails.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAllQuntityUsedCust",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmAllQuntityUsedCust.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmAtviaionCSID",
+      "namespace": "GTSErpSystem.Frms.ElctorncInvoic",
+      "file": "Frms\\ElctorncInvoic\\FrmAtviaionCSID.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmBackUp",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmBackUp.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmBarCodeItem",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmBarCodeItem.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmBlue",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmBlue.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmBounce",
+      "namespace": "GTSErpSystem.Frms.Contract.Report",
+      "file": "Frms\\Contract\\Report\\FrmBounce.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmBounce",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmBounce.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmBranches",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup",
+      "file": "Frms\\Cust_Sup\\FrmBranches.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCalcRes",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant.LuckUp",
+      "file": "Frms\\FrmRestaurant\\LuckUp\\FrmCalcRes.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCalculator",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmCalculator.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCardAccount",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmCardAccount.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCars",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmCars.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCashierQuantity",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmCachMoney",
+      "file": "Frms\\Orders\\FrmCachMoney\\FrmCashierQuantity.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCashierSetting",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmCachMoney",
+      "file": "Frms\\Orders\\FrmCachMoney\\FrmCashierSetting.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCashir",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmCashir.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCashirPharm",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmCashirPharm.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmCashirRestaurant",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmCashirRestaurant.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmCashirWashing",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmCashirWashing.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCashirWithOutGroup",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmCashirWithOutGroup.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmChangeDataBase",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmChangeDataBase.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCheckActivationCloseYear",
+      "namespace": "GTSErpSystem",
+      "file": "FrmCheckActivationCloseYear.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCheckActivationElctroncInv",
+      "namespace": "GTSErpSystem.Frms.ElctorncInvoic",
+      "file": "Frms\\ElctorncInvoic\\FrmCheckActivationElctroncInv.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCheckCollection",
+      "namespace": "GTSErpSystem.Frms.Account.Check",
+      "file": "Frms\\Account\\Check\\FrmCheckCollection.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCheckCollectionIssued",
+      "namespace": "GTSErpSystem.Frms.Account.Check",
+      "file": "Frms\\Account\\Check\\FrmCheckCollectionIssued.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCheckIssued",
+      "namespace": "GTSErpSystem.Frms.Account.Check",
+      "file": "Frms\\Account\\Check\\FrmCheckIssued.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCheckOut",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmCheckOut.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmClass",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmClass.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCloseDay",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmOpenDay",
+      "file": "Frms\\Orders\\FrmOpenDay\\FrmCloseDay.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCloseDayByUser",
+      "namespace": "GTSErpSystem.Frms.Reports.Public",
+      "file": "Frms\\Reports\\Public\\FrmCloseDayByUser.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmCloseYear",
+      "namespace": "GTSErpSystem.Frms.CloseYears",
+      "file": "Frms\\CloseYears\\FrmCloseYear.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmCompany",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmCompany.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmContract",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmContract.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmContractItem",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmContractItem.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmContractScaffolds",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmContractScaffolds.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmContractState",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmContractState.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmCostCenter",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmCostCenter.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCostCenterByFather",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmCostCenterByFather.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmCostCenterTree",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmCostCenterTree.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCountry",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmCountry.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmCustomer",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup",
+      "file": "Frms\\Cust_Sup\\FrmCustomer.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDailyRestrictions",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmDailyRestrictions.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDailyRestrictionsTest",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmDailyRestrictionsTest.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDalala",
+      "namespace": "GTSErpSystem.Frms.OrderDalala",
+      "file": "Frms\\OrderDalala\\FrmDalala.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDamages",
+      "namespace": "GTSErpSystem.Frms.Repairs",
+      "file": "Frms\\Repairs\\FrmDamages.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDateCashier",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmDateCashier.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDebtReconstruction",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmDebtReconstruction.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDefualtAccount",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmDefualtAccount.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDefualtAccount",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmDefualtAccount.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDefualtCustomer",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmDefualtCustomer.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDelivery",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant.LuckUp",
+      "file": "Frms\\FrmRestaurant\\LuckUp\\FrmDelivery.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDeliveryCollecting",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmDeliveryCollecting.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDesignerReport",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmDesignerReport.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDisCode",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmDisCode.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmDoctor",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmDoctor.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmDrivers",
+      "namespace": "GTSErpSystem.Frms.Transportation",
+      "file": "Frms\\Transportation\\FrmDrivers.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmEditRoom",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmEditRoom.cs",
+      "controls": 3
+    },
+    {
+      "screen": "FrmEditUser",
+      "namespace": "GTSErpSystem.Frms.Security",
+      "file": "Frms\\Security\\FrmEditUser.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmEJAR",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmEJAR.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmEmployee",
+      "namespace": "GTSErpSystem.Frms.Payroll",
+      "file": "Frms\\Payroll\\FrmEmployee.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmEntrusted",
+      "namespace": "GTSErpSystem.Frms.Payroll",
+      "file": "Frms\\Payroll\\FrmEntrusted.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmEntrustedEmployee",
+      "namespace": "GTSErpSystem.Frms.Payroll",
+      "file": "Frms\\Payroll\\FrmEntrustedEmployee.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmEntryPermission",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmEntryPermission.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmExitPermission",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmExitPermission.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmExpAndRevenuesReports",
+      "namespace": "GTSErpSystem.Frms.OrderRent.RentReports",
+      "file": "Frms\\OrderRent\\RentReports\\FrmExpAndRevenuesReports.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmExpReports",
+      "namespace": "GTSErpSystem.Frms.OrderRent.RentReports",
+      "file": "Frms\\OrderRent\\RentReports\\FrmExpReports.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGenetareCSID",
+      "namespace": "GTSErpSystem.Frms.ElctorncInvoic",
+      "file": "Frms\\ElctorncInvoic\\FrmGenetareCSID.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGetDataFromCRM",
+      "namespace": "GTSErpSystem.Frms.ElctorncInvoic",
+      "file": "Frms\\ElctorncInvoic\\FrmGetDataFromCRM.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGold",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmGold.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGoldPlus",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmGoldPlus.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGoldPlusImportExport",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmGoldPlusImportExport.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGoldPlusTransportation",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmGoldPlusTransportation.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGroups",
+      "namespace": "GTSErpSystem.Frms.Security",
+      "file": "Frms\\Security\\FrmGroups.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGroupsRes",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmGroupsRes.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGuarantee",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmGuarantee.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmGuarantee",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmGuarantee.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmHalls",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmReservations",
+      "file": "Frms\\Orders\\FrmReservations\\FrmHalls.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmImportExcel",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmImportExcel.cs",
+      "controls": 3
+    },
+    {
+      "screen": "FrmImportExcel",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmImportExcel.cs",
+      "controls": 3
+    },
+    {
+      "screen": "FrmInventorySettlementMinus",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmInventorySettlementMinus.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmInvoicType",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmInvoicType.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmItemProfit",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmItemProfit.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmItemReader",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmItemReader.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmItemRentDeatils",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\FrmItemRentDeatils.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmItems",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmItems.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmItemVat",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmItemVat.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmLight2",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmLight2.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmLock",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmLock.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmLogin",
+      "namespace": "GTSErpSystem",
+      "file": "FrmLogin.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmLogin26",
+      "namespace": "GTSErpSystem",
+      "file": "FrmLogin26.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmLogin3",
+      "namespace": "GTSErpSystem",
+      "file": "FrmLogin3.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmLoginCrm",
+      "namespace": "GTSErpSystem.Frms.ElctorncInvoic",
+      "file": "Frms\\ElctorncInvoic\\FrmLoginCrm.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmLoginVirg",
+      "namespace": "GTSErpSystem.Frms.Virgins",
+      "file": "Frms\\Virgins\\FrmLoginVirg.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMahlyCollecting",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmMahlyCollecting.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmManufacturing",
+      "namespace": "GTSErpSystem.Frms.OrderManufacturing",
+      "file": "Frms\\OrderManufacturing\\FrmManufacturing.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmManufacturingOrder",
+      "namespace": "GTSErpSystem.Frms.OrderManufacturing",
+      "file": "Frms\\OrderManufacturing\\FrmManufacturingOrder.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMinutesRemoval",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmMinutesRemoval.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMinutesStarted",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmMinutesStarted.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMoney",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmCachMoney",
+      "file": "Frms\\Orders\\FrmCachMoney\\FrmMoney.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMoneyAjil",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmCachMoney",
+      "file": "Frms\\Orders\\FrmCachMoney\\FrmMoneyAjil.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMoneyCashier",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmCachMoney",
+      "file": "Frms\\Orders\\FrmCachMoney\\FrmMoneyCashier.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMoneyDelivery",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmMoneyDelivery.cs",
+      "controls": 3
+    },
+    {
+      "screen": "FrmMoneyMahly",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmMoneyMahly.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmMoneySafry",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmMoneySafry.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMovementsDailyReport",
+      "namespace": "GTSErpSystem.Frms.Reports.Public",
+      "file": "Frms\\Reports\\Public\\FrmMovementsDailyReport.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMovementsDailyReportAllBran",
+      "namespace": "GTSErpSystem.Frms.Reports.AllBranch",
+      "file": "Frms\\Reports\\AllBranch\\FrmMovementsDailyReportAllBran.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmMovementsDailyReportAllBran2",
+      "namespace": "GTSErpSystem.Frms.Reports.AllBranch",
+      "file": "Frms\\Reports\\AllBranch\\FrmMovementsDailyReportAllBran2.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmNetOrders",
+      "namespace": "GTSErpSystem.Frms.Reports.Gold",
+      "file": "Frms\\Reports\\Gold\\FrmNetOrders.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmNetProfitSalesMan",
+      "namespace": "GTSErpSystem.Frms.Reports.SalesMan",
+      "file": "Frms\\Reports\\SalesMan\\FrmNetProfitSalesMan.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmNetPurches",
+      "namespace": "GTSErpSystem.Frms.Reports.Gold",
+      "file": "Frms\\Reports\\Gold\\FrmNetPurches.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmNetPurchOrders",
+      "namespace": "GTSErpSystem.Frms.Reports.Gold",
+      "file": "Frms\\Reports\\Gold\\FrmNetPurchOrders.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmOilChange",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmOilChange.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmOpenAccount",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmOpenAccount.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmOpenDay",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmOpenDay",
+      "file": "Frms\\Orders\\FrmOpenDay\\FrmOpenDay.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmOpenQuantity",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmOpenQuantity.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmOrderDetailsByDate",
+      "namespace": "GTSErpSystem.Frms.Reports.Public",
+      "file": "Frms\\Reports\\Public\\FrmOrderDetailsByDate.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmOrderInCashier",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmLuckUpOrders",
+      "file": "Frms\\Orders\\FrmLuckUpOrders\\FrmOrderInCashier.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmOrderReturn",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmOrderReturn.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmOrderReturnRental",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\FrmOrderReturnRental.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmOrders",
+      "namespace": "GTSErpSystem.Frms.Reports.Gold",
+      "file": "Frms\\Reports\\Gold\\FrmOrders.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmOrders",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmOrders.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmOrdersDraft",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmOrdersDraft.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmOrdersNetPurchOnly",
+      "namespace": "GTSErpSystem.Frms.Reports.Gold",
+      "file": "Frms\\Reports\\Gold\\FrmOrdersNetPurchOnly.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmOrdersReturn",
+      "namespace": "GTSErpSystem.Frms.Reports.Gold",
+      "file": "Frms\\Reports\\Gold\\FrmOrdersReturn.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmOrdersReturnNoPurchCode",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmOrdersReturnNoPurchCode.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmOrdersWedding",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmOrdersWedding.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPassExcel",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmPassExcel.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPassword",
+      "namespace": "GTSErpSystem.Frms.Security",
+      "file": "Frms\\Security\\FrmPassword.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPassWord",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmPassWord.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPassWordElctronc",
+      "namespace": "GTSErpSystem.Frms.ElctorncInvoic",
+      "file": "Frms\\ElctorncInvoic\\FrmPassWordElctronc.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPassWordOrderReturn",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmPassWordOrderReturn.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPassWordSupervisor",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmLuckUpOrders",
+      "file": "Frms\\Orders\\FrmLuckUpOrders\\FrmPassWordSupervisor.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPassWordVat",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmPassWordVat.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPayment",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmPayment.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPaymentBig",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmPaymentBig.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPaymentItem",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmPaymentItem.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPayroll",
+      "namespace": "GTSErpSystem.Frms.Payroll",
+      "file": "Frms\\Payroll\\FrmPayroll.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPayrollTemp",
+      "namespace": "GTSErpSystem.Frms.Payroll",
+      "file": "Frms\\Payroll\\FrmPayrollTemp.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPlace",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup",
+      "file": "Frms\\Cust_Sup\\FrmPlace.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPremium",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmPremium.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPriceOffer",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmPriceOffer.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPriceOfferScaffolds",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmPriceOfferScaffolds.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPrint",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant",
+      "file": "Frms\\FrmRestaurant\\FrmPrint.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPrintBarcode",
+      "namespace": "GTSErpSystem.Frms.Items.FrmSearch",
+      "file": "Frms\\Items\\FrmSearch\\FrmPrintBarcode.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmPrinter",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmPrinter.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPrinterCashier",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmPrinterCashier.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmProjects",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmProjects.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPurchaseOrder",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmPurchaseOrder.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPurchases",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmPurchases.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPurchasesReturn",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmPurchasesReturn.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPurchasesReturnNoPurchCode",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmPurchasesReturnNoPurchCode.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmPurches",
+      "namespace": "GTSErpSystem.Frms.Reports.Gold",
+      "file": "Frms\\Reports\\Gold\\FrmPurches.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmPurchesReturn",
+      "namespace": "GTSErpSystem.Frms.Reports.Gold",
+      "file": "Frms\\Reports\\Gold\\FrmPurchesReturn.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmReceiptCheck",
+      "namespace": "GTSErpSystem.Frms.Account.Check",
+      "file": "Frms\\Account\\Check\\FrmReceiptCheck.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReceipts",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmReceipts.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReceiptsBig",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmReceiptsBig.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReceiptsScaffolds",
+      "namespace": "GTSErpSystem.Frms.Account",
+      "file": "Frms\\Account\\FrmReceiptsScaffolds.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReceive",
+      "namespace": "GTSErpSystem.Frms.Transportation",
+      "file": "Frms\\Transportation\\FrmReceive.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRecipt",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\FrmRecipt.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRecipt2",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\FrmRecipt2.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRecipt3",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\FrmRecipt3.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRecpItem",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmRecpItem.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRecpitReports",
+      "namespace": "GTSErpSystem.Frms.OrderRent.RentReports",
+      "file": "Frms\\OrderRent\\RentReports\\FrmRecpitReports.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReforms",
+      "namespace": "GTSErpSystem.Frms.Repairs",
+      "file": "Frms\\Repairs\\FrmReforms.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRent",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\FrmRent.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRentalExpenses",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\FrmRentalExpenses.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRentalInvoice",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\FrmRentalInvoice.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRentReports",
+      "namespace": "GTSErpSystem.Frms.OrderRent.RentReports",
+      "file": "Frms\\OrderRent\\RentReports\\FrmRentReports.cs",
+      "controls": 5
+    },
+    {
+      "screen": "FrmRentReports2",
+      "namespace": "GTSErpSystem.Frms.OrderRent.RentReports",
+      "file": "Frms\\OrderRent\\RentReports\\FrmRentReports2.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRepair",
+      "namespace": "GTSErpSystem.Frms.FrmOthers",
+      "file": "Frms\\FrmOthers\\FrmRepair.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRepairs",
+      "namespace": "GTSErpSystem.Frms.Repairs",
+      "file": "Frms\\Repairs\\FrmRepairs.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReplace",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmReplace.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReportAll",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmReportAll.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReportGetOrder",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmReportGetOrder.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReportOrderDalala_Dalala",
+      "namespace": "GTSErpSystem.Frms.OrderDalala.Report",
+      "file": "Frms\\OrderDalala\\Report\\FrmReportOrderDalala_Dalala.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmReportOrderDalala_Sending",
+      "namespace": "GTSErpSystem.Frms.OrderDalala.Report",
+      "file": "Frms\\OrderDalala\\Report\\FrmReportOrderDalala_Sending.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmReportRent",
+      "namespace": "GTSErpSystem.OrderRent",
+      "file": "OrderRent\\FrmReportRent.cs",
+      "controls": 5
+    },
+    {
+      "screen": "FrmReportReser",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmReservations",
+      "file": "Frms\\Orders\\FrmReservations\\FrmReportReser.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmResend",
+      "namespace": "GTSErpSystem.Frms.Transportation",
+      "file": "Frms\\Transportation\\FrmResend.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmResend",
+      "namespace": "GTSErpSystem.Frms.Transportation.SearchTransportation",
+      "file": "Frms\\Transportation\\SearchTransportation\\FrmResend.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmReservation",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup",
+      "file": "Frms\\Cust_Sup\\FrmReservation.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReservations",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmReservations",
+      "file": "Frms\\Orders\\FrmReservations\\FrmReservations.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRestaurant",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmRestaurant.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRestaurantSilver",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmRestaurantSilver.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmReturnOrderInCashier",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmLuckUpOrders",
+      "file": "Frms\\Orders\\FrmLuckUpOrders\\FrmReturnOrderInCashier.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRoom",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant.LuckUp",
+      "file": "Frms\\FrmRestaurant\\LuckUp\\FrmRoom.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPCostCenter",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPCostCenter.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPDeportation",
+      "namespace": "GTSErpSystem.Frms.Transportation",
+      "file": "Frms\\Transportation\\FrmRPDeportation.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPItemLimit",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmRPItemLimit.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmRPLeadger",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPLeadger.cs",
+      "controls": 3
+    },
+    {
+      "screen": "FrmRPLeadgerCar",
+      "namespace": "GTSErpSystem.Frms.Transportation",
+      "file": "Frms\\Transportation\\FrmRPLeadgerCar.cs",
+      "controls": 3
+    },
+    {
+      "screen": "FrmRPLeadgerSupp",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPLeadgerSupp.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPMizan",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPMizan.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPMizanCustSupp",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPMizanCustSupp.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPMizanGroups",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPMizanGroups.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPMizaniyah",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPMizaniyah.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPMizaniyahAllBran",
+      "namespace": "GTSErpSystem.Frms.Reports.AllBranch",
+      "file": "Frms\\Reports\\AllBranch\\FrmRPMizaniyahAllBran.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPMizanTotal",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPMizanTotal.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPMovementAllItemActive",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmRPMovementAllItemActive.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPMovementItem",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmRPMovementItem.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmRPMovementItemActive",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmRPMovementItemActive.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmRPMovementsDailyReport",
+      "namespace": "GTSErpSystem.Frms.Reports.Public",
+      "file": "Frms\\Reports\\Public\\FrmRPMovementsDailyReport.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmRPOrderDaily",
+      "namespace": "GTSErpSystem.Frms.Reports.Public",
+      "file": "Frms\\Reports\\Public\\FrmRPOrderDaily.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmRPProfitAndLossAccount",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPProfitAndLossAccount.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmRPProfitAndLossAccountAllBran",
+      "namespace": "GTSErpSystem.Frms.Reports.AllBranch",
+      "file": "Frms\\Reports\\AllBranch\\FrmRPProfitAndLossAccountAllBran.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPProject",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPProject.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmRpSalesPurchesForSupp",
+      "namespace": "GTSErpSystem.Frms.Reports.Public",
+      "file": "Frms\\Reports\\Public\\FrmRpSalesPurchesForSupp.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmRPStoresGard",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmRPStoresGard.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPStoresGardbyProperties",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmRPStoresGardbyProperties.cs",
+      "controls": 3
+    },
+    {
+      "screen": "FrmRPTasferByGroup",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmRPTasferByGroup.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmRPTotalAvergForSore_ByGroupProperties",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmRPTotalAvergForSore_ByGroupProperties.cs",
+      "controls": 3
+    },
+    {
+      "screen": "FrmRPTranTeacher",
+      "namespace": "GTSErpSystem.Frms.Reports.Account",
+      "file": "Frms\\Reports\\Account\\FrmRPTranTeacher.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmRTransferFromBranch",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores.Branches",
+      "file": "Frms\\Reports\\Stores\\Branches\\FrmRTransferFromBranch.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmRTransferToBranch",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores.Branches",
+      "file": "Frms\\Reports\\Stores\\Branches\\FrmRTransferToBranch.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmSalesEmployee",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmSalesEmployee.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmSalesMan",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup",
+      "file": "Frms\\Cust_Sup\\FrmSalesMan.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearch",
+      "namespace": "GTSErpSystem.Frms.Virgins",
+      "file": "Frms\\Virgins\\FrmSearch.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmSearchAccount",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchAccount.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchAccount",
+      "namespace": "GTSErpSystem.Frms.FrmsMain.Search",
+      "file": "Frms\\FrmsMain\\Search\\FrmSearchAccount.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchAccountForTree",
+      "namespace": "GTSErpSystem.Frms.FrmsMain.Search",
+      "file": "Frms\\FrmsMain\\Search\\FrmSearchAccountForTree.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchAccountPayment",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchAccountPayment.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchAccountReceipts",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchAccountReceipts.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchAdds",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant.LuckUp",
+      "file": "Frms\\FrmRestaurant\\LuckUp\\FrmSearchAdds.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearchBranch",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup.Search",
+      "file": "Frms\\Cust_Sup\\Search\\FrmSearchBranch.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchByBarcode",
+      "namespace": "GTSErpSystem.Frms.Items.FrmSearch",
+      "file": "Frms\\Items\\FrmSearch\\FrmSearchByBarcode.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearchCheckIssued",
+      "namespace": "GTSErpSystem.Frms.Account.Check.Search",
+      "file": "Frms\\Account\\Check\\Search\\FrmSearchCheckIssued.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchCheckout",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchCheckout.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchCheckoutOrders",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchCheckoutOrders.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchCheckRecipt",
+      "namespace": "GTSErpSystem.Frms.Account.Check.Search",
+      "file": "Frms\\Account\\Check\\Search\\FrmSearchCheckRecipt.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchContract",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchContract.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchCostCenter",
+      "namespace": "GTSErpSystem.Frms.FrmsMain.Search",
+      "file": "Frms\\FrmsMain\\Search\\FrmSearchCostCenter.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchCustomer",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup.Search",
+      "file": "Frms\\Cust_Sup\\Search\\FrmSearchCustomer.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmSearchCustomer",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchCustomer.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmSearchCustomerAll",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup.Search",
+      "file": "Frms\\Cust_Sup\\Search\\FrmSearchCustomerAll.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchDalala",
+      "namespace": "GTSErpSystem.Frms.OrderDalala.FrmSearch",
+      "file": "Frms\\OrderDalala\\FrmSearch\\FrmSearchDalala.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchDefualtAccount",
+      "namespace": "GTSErpSystem.Frms.FrmsMain.Search",
+      "file": "Frms\\FrmsMain\\Search\\FrmSearchDefualtAccount.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchEJAR",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchEJAR.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchEntryPermission",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchEntryPermission.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchExitPermission",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchExitPermission.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchGuarantee",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchGuarantee.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchInventorySettlementMinus",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchInventorySettlementMinus.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchItems1",
+      "namespace": "GTSErpSystem.Frms.Items.FrmSearch",
+      "file": "Frms\\Items\\FrmSearch\\FrmSearchItems1.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearchManufacturing",
+      "namespace": "GTSErpSystem.Frms.OrderManufacturing.FrmSearch",
+      "file": "Frms\\OrderManufacturing\\FrmSearch\\FrmSearchManufacturing.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchManufacturingOrder",
+      "namespace": "GTSErpSystem.Frms.OrderManufacturing.FrmSearch",
+      "file": "Frms\\OrderManufacturing\\FrmSearch\\FrmSearchManufacturingOrder.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchMinutesEnd",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchMinutesEnd.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchMinutesStarted",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchMinutesStarted.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchOpenQuantity",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchOpenQuantity.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchOrderReturn",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchOrderReturn.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchOrderReturnNoPurchCode",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchOrderReturnNoPurchCode.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchOrders",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchOrders.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearchOrdersDraft",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchOrdersDraft.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearchPayment",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchPayment.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPaymentBig",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchPaymentBig.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPaymentItems",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchPaymentItems.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPayroll",
+      "namespace": "GTSErpSystem.Frms.Payroll.Search",
+      "file": "Frms\\Payroll\\Search\\FrmSearchPayroll.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPayrollTemp",
+      "namespace": "GTSErpSystem.Frms.Payroll.Search",
+      "file": "Frms\\Payroll\\Search\\FrmSearchPayrollTemp.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPriceOffer",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchPriceOffer.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearchPriceOfferScaffold",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchPriceOfferScaffold.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPriceShowRent",
+      "namespace": "GTSErpSystem.Frms.OrderRent.Search",
+      "file": "Frms\\OrderRent\\Search\\FrmSearchPriceShowRent.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchProjects",
+      "namespace": "GTSErpSystem.Frms.FrmsMain.Search",
+      "file": "Frms\\FrmsMain\\Search\\FrmSearchProjects.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPurchases",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchPurchases.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPurchasesOrder",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchPurchasesOrder.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPurchReturn",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchPurchReturn.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchPurchReturnNoPurchCode",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchPurchReturnNoPurchCode.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchReceipts",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchReceipts.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchReceiptsBig",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchReceiptsBig.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchReceive",
+      "namespace": "GTSErpSystem.Frms.Transportation.SearchTransportation",
+      "file": "Frms\\Transportation\\SearchTransportation\\FrmSearchReceive.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchRecipt",
+      "namespace": "GTSErpSystem.Frms.OrderRent.Search",
+      "file": "Frms\\OrderRent\\Search\\FrmSearchRecipt.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchRecItem",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchRecItem.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchRent",
+      "namespace": "GTSErpSystem.Frms.OrderRent.Search",
+      "file": "Frms\\OrderRent\\Search\\FrmSearchRent.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchRentalExpenses",
+      "namespace": "GTSErpSystem.Frms.OrderRent.Search",
+      "file": "Frms\\OrderRent\\Search\\FrmSearchRentalExpenses.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchRentalInvoice",
+      "namespace": "GTSErpSystem.Frms.OrderRent.Search",
+      "file": "Frms\\OrderRent\\Search\\FrmSearchRentalInvoice.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchRepairs",
+      "namespace": "GTSErpSystem.Frms.Repairs",
+      "file": "Frms\\Repairs\\FrmSearchRepairs.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearchReservation",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup.Search",
+      "file": "Frms\\Cust_Sup\\Search\\FrmSearchReservation.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchScaffoldsContract",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchScaffoldsContract.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchScaffoldsContractNotStart",
+      "namespace": "GTSErpSystem.Frms.Contract.Search",
+      "file": "Frms\\Contract\\Search\\FrmSearchScaffoldsContractNotStart.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchSending",
+      "namespace": "GTSErpSystem.Frms.OrderDalala.FrmSearch",
+      "file": "Frms\\OrderDalala\\FrmSearch\\FrmSearchSending.cs",
+      "controls": 1
+    },
+    {
+      "screen": "FrmSearchStatuse",
+      "namespace": "GTSErpSystem.Frms.Virgins",
+      "file": "Frms\\Virgins\\FrmSearchStatuse.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmSearchSuppliers",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup.Search",
+      "file": "Frms\\Cust_Sup\\Search\\FrmSearchSuppliers.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmSearchSuppliers",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchSuppliers.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmSearchTran",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchTran.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchTransfer",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchTransfer.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchTransfer2",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchTransfer2.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchTransferAllBranch",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchTransferAllBranch.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSearchTransferBranchMaster",
+      "namespace": "GTSErpSystem.Frms.OrdersTransfer.Search",
+      "file": "Frms\\OrdersTransfer\\Search\\FrmSearchTransferBranchMaster.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchTransferFromBranch",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchTransferFromBranch.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchTransferStore",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchTransferStore.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchTransferToBranch",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchTransferToBranch.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchTranTemp",
+      "namespace": "GTSErpSystem.Frms.Account.Search",
+      "file": "Frms\\Account\\Search\\FrmSearchTranTemp.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchUnit",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchUnit.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmSearchWedding",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmSearchWedding.cs",
+      "controls": 4
+    },
+    {
+      "screen": "FrmSecurityGroup",
+      "namespace": "GTSErpSystem.Frms.Security",
+      "file": "Frms\\Security\\FrmSecurityGroup.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSelectEmp",
+      "namespace": "GTSErpSystem.Frms.Payroll",
+      "file": "Frms\\Payroll\\FrmSelectEmp.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSending",
+      "namespace": "GTSErpSystem.Frms.OrderDalala",
+      "file": "Frms\\OrderDalala\\FrmSending.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSetting",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmSetting.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSilver",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmSilver.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSilverPlus",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmSilverPlus.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSilverPlusWashing",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmSilverPlusWashing.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmsOption",
+      "namespace": "GTSErpSystem.Frms.Orders.FrmSearchOrder",
+      "file": "Frms\\Orders\\FrmSearchOrder\\FrmsOption.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSqlConnection",
+      "namespace": "GTSErpSystem",
+      "file": "FrmSqlConnection.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmStockItem",
+      "namespace": "GTSErpSystem.Frms.Reports.Orders",
+      "file": "Frms\\Reports\\Orders\\FrmStockItem.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmStoreGardCat",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmStoreGardCat.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmStoreGardCatSearch",
+      "namespace": "GTSErpSystem.Frms.Reports.Stores",
+      "file": "Frms\\Reports\\Stores\\FrmStoreGardCatSearch.cs",
+      "controls": 2
+    },
+    {
+      "screen": "FrmStores",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup",
+      "file": "Frms\\Cust_Sup\\FrmStores.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmStoresTransfer",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmStoresTransfer.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmSuppliers",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup",
+      "file": "Frms\\Cust_Sup\\FrmSuppliers.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmTable",
+      "namespace": "GTSErpSystem.Frms.FrmRestaurant.LuckUp",
+      "file": "Frms\\FrmRestaurant\\LuckUp\\FrmTable.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmTailor",
+      "namespace": "GTSErpSystem.Frms.Cust_Sup",
+      "file": "Frms\\Cust_Sup\\FrmTailor.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmTest",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmTest.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmTobaccoTaxReport",
+      "namespace": "GTSErpSystem.Frms.Reports.Public",
+      "file": "Frms\\Reports\\Public\\FrmTobaccoTaxReport.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmTransferBranchMaster",
+      "namespace": "GTSErpSystem.Frms.OrdersTransfer",
+      "file": "Frms\\OrdersTransfer\\FrmTransferBranchMaster.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmTransferFromBranch",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmTransferFromBranch.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmTransferMasterToBranch",
+      "namespace": "GTSErpSystem.Frms.OrdersTransfer",
+      "file": "Frms\\OrdersTransfer\\FrmTransferMasterToBranch.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmTransferToBranch",
+      "namespace": "GTSErpSystem.Frms.Orders",
+      "file": "Frms\\Orders\\FrmTransferToBranch.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmUnit",
+      "namespace": "GTSErpSystem.Frms.Items",
+      "file": "Frms\\Items\\FrmUnit.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmUsers",
+      "namespace": "GTSErpSystem.Frms.Security",
+      "file": "Frms\\Security\\FrmUsers.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmVAT",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\FrmVAT.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmVatReport",
+      "namespace": "GTSErpSystem.Frms.Reports.Public",
+      "file": "Frms\\Reports\\Public\\FrmVatReport.cs",
+      "controls": 6
+    },
+    {
+      "screen": "FrmViewFiles",
+      "namespace": "GTSErpSystem.Frms.Contract",
+      "file": "Frms\\Contract\\FrmViewFiles.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmVirgin",
+      "namespace": "GTSErpSystem.Frms.Virgins",
+      "file": "Frms\\Virgins\\FrmVirgin.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmWindow",
+      "namespace": "GTSErpSystem.Frms.FrmsHome",
+      "file": "Frms\\FrmsHome\\FrmWindow.cs",
+      "controls": 0
+    },
+    {
+      "screen": "FrmZatcaIntgration",
+      "namespace": "GTSErpSystem.Frms.ElctorncInvoic",
+      "file": "Frms\\ElctorncInvoic\\FrmZatcaIntgration.cs",
+      "controls": 3
+    },
+    {
+      "screen": "InfoAllowances",
+      "namespace": "GTSErpSystem.Frms.Payroll.Search",
+      "file": "Frms\\Payroll\\Search\\InfoAllowances.cs",
+      "controls": 0
+    },
+    {
+      "screen": "OrdersPriceShowRental",
+      "namespace": "GTSErpSystem.Frms.OrderRent",
+      "file": "Frms\\OrderRent\\OrdersPriceShowRental.cs",
+      "controls": 0
+    },
+    {
+      "screen": "SentInvoiceToZakat",
+      "namespace": "GTSErpSystem.Frms.ElctorncInvoic",
+      "file": "Frms\\ElctorncInvoic\\SentInvoiceToZakat.cs",
+      "controls": 0
+    },
+    {
+      "screen": "TestXml",
+      "namespace": "GTSErpSystem.Helper",
+      "file": "Helper\\TestXml.cs",
+      "controls": 1
+    },
+    {
+      "screen": "WaitForm",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\WaitForm.cs",
+      "controls": 1
+    },
+    {
+      "screen": "WhathAppInfo",
+      "namespace": "GTSErpSystem.Frms.FrmsMain",
+      "file": "Frms\\FrmsMain\\WhathAppInfo.cs",
+      "controls": 0
+    }
+  ]
+}
