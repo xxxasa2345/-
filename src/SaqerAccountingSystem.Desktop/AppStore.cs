@@ -22,7 +22,7 @@ public sealed class AppStore
 
     public AppStore()
     {
-        var url = Environment.GetEnvironmentVariable("SAQER_API_URL") ?? "http://localhost:5000";
+        var url = Environment.GetEnvironmentVariable("SAQER_API_URL") ?? LoadApiUrl();
         _http = new HttpClient { BaseAddress = new Uri(url.TrimEnd('/') + "/"), Timeout = TimeSpan.FromSeconds(30) };
     }
 
@@ -61,6 +61,22 @@ public sealed class AppStore
     public List<AssetRow> Assets { get; } = new();
     public List<CostCenterRow> CostCenters { get; } = new();
     public List<BudgetRow> Budgets { get; } = new();
+
+    private static string LoadApiUrl()
+    {
+        try
+        {
+            var path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+            if (File.Exists(path))
+            {
+                using var doc = JsonDocument.Parse(File.ReadAllText(path));
+                if (doc.RootElement.TryGetProperty("ApiBaseUrl", out var value))
+                    return value.GetString() ?? "http://localhost:5000";
+            }
+        }
+        catch { }
+        return "http://localhost:5000";
+    }
 
     public UserProfile? Authenticate(string username, string password)
     {
