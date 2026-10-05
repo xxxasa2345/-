@@ -445,7 +445,7 @@ public sealed class MajedSoftLegacyStore
         var name = (screenName ?? string.Empty).Trim().ToLowerInvariant();
 
         if (ContainsAny(name, "لوحة", "الرئيسية", "dashboard", "main")) return "dashboard";
-        if (ContainsAny(name, "شركة", "شركات", "فرع", "فروع", "company", "branch")) return "companies";
+        if (ContainsAny(name, "شركة", "شركات", "فرع", "فروع", "company", "branch", "بيانات المنشأة")) return "companies";
         if (ContainsAny(name, "عميل", "عملاء", "customer")) return "customers";
         if (ContainsAny(name, "مورد", "موردين", "مورّد", "supplier")) return "suppliers";
         if (ContainsAny(name, "صنف", "أصناف", "مادة", "مواد", "item", "product")) return "items";
@@ -460,6 +460,7 @@ public sealed class MajedSoftLegacyStore
         if (ContainsAny(name, "مركز تكلفة", "مراكز التكلفة", "cost center", "costcenter")) return "costcenters";
         if (ContainsAny(name, "موازنة", "موازنات", "ميزانية تقديرية", "budget")) return "budgets";
         if (ContainsAny(name, "تقرير", "تقارير", "ميزان مراجعة", "قائمة دخل", "balance sheet", "income statement", "report")) return "reports";
+        if (ContainsAny(name, "مستخدم", "مستخدمين", "صلاحيات", "أمن", "أمان", "user", "permission", "security")) return "users";
         if (ContainsAny(name, "إعداد", "اعداد", "settings", "system")) return "settings";
         return "";
     }
