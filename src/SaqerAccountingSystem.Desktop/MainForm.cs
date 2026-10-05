@@ -395,13 +395,42 @@ public sealed class MainForm : Form
 
     private Control LegacyScreens()
     {
+        var panel = new Panel { BackColor = Theme.Background };
+
+        var header = new Label
+        {
+            Dock = DockStyle.Top,
+            Height = 72,
+            Text = "الشاشات الفعلية المرتبطة بحساب " + _user.Username +
+                   "\r\nانقر مرتين على أي شاشة لفتح الوحدة العملية المرتبطة بها.",
+            Font = new Font("Tahoma", 12F, FontStyle.Bold),
+            TextAlign = ContentAlignment.MiddleRight
+        };
+        panel.Controls.Add(header);
+
         var rows = _user.LegacyScreens.Select(x => new
         {
             المعرف = x.ScreenId,
             الشاشة = x.Name,
+            الوحدة = LegacyScreenRouter.ResolveModule(x.Name) switch
+            {
+                "sales" => "المبيعات",
+                "purchases" => "المشتريات",
+                "accounts" => "الحسابات",
+                "journals" => "القيود والأستاذ",
+                "items" => "الأصناف",
+                "customers" => "العملاء",
+                "suppliers" => "الموردون",
+                "payments" => "الخزينة والبنوك",
+                "inventory" => "المخزون",
+                "tax" => "الضريبة",
+                "reports" => "التقارير",
+                "users" => "المستخدمون والصلاحيات",
+                "companies" => "الشركات والفروع",
+                _ => "مساحة شاشة"
+            },
             النوع = x.ScreenTypeName,
             رقم = x.ScreenNum,
-            ظاهر = x.IsShow,
             إدخال = x.AllowEnter,
             حفظ = x.AllowSave,
             تعديل = x.AllowEdit,
@@ -410,7 +439,54 @@ public sealed class MainForm : Form
             تصدير = x.AllowExport
         }).ToArray();
 
-        return GridScreen("جميع الشاشات الأصلية المرتبطة بالمستخدم", rows);
+        var gridPanel = GridScreen("جميع الشاشات الأصلية المرتبطة بالمستخدم", rows);
+        gridPanel.Dock = DockStyle.Fill;
+        panel.Controls.Add(gridPanel);
+
+        var grid = gridPanel.Controls.OfType<DataGridView>().FirstOrDefault();
+        if (grid is not null)
+        {
+            grid.CellDoubleClick += (_, e) =>
+            {
+                if (e.RowIndex < 0 || e.RowIndex >= _user.LegacyScreens.Count) return;
+                var access = _user.LegacyScreens[e.RowIndex];
+                var module = LegacyScreenRouter.ResolveModule(access.Name);
+
+                if (string.IsNullOrWhiteSpace(module))
+                {
+                    ShowDetailsDialog("مساحة الشاشة: " + access.Name, new[]
+                    {
+                        new
+                        {
+                            الشاشة = access.Name,
+                            المعرف = access.ScreenId,
+                            الحالة = "تم إنشاء مضيف شاشة عام؛ منطق المصدر الأصلي غير موجود على الجهاز.",
+                            إدخال = access.AllowEnter,
+                            حفظ = access.AllowSave,
+                            تعديل = access.AllowEdit,
+                            حذف = access.AllowDelete,
+                            طباعة = access.AllowPrint,
+                            تصدير = access.AllowExport
+                        }
+                    });
+                    return;
+                }
+
+                if (module != "dashboard")
+                {
+                    var info = _store.Modules.FirstOrDefault(x => x.Key == module);
+                    if (info is not null && !_user.Permissions.Contains(info.Permission, StringComparer.OrdinalIgnoreCase))
+                    {
+                        ShowError("هذه الشاشة موجودة في User_Screens، لكن المجموعة الحالية لا تملك صلاحية الوحدة المقابلة.");
+                        return;
+                    }
+                }
+
+                ShowModule(module);
+            };
+        }
+
+        return panel;
     }
 
     private void ShowSaleDetails(int id)
