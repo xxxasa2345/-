@@ -57,6 +57,10 @@ public sealed class AppStore
     public List<PaymentRow> Payments { get; } = new();
     public List<JournalRow> Journals { get; } = new();
     public List<InventoryRow> Inventory { get; } = new();
+    public List<TaxRow> Taxes { get; } = new();
+    public List<AssetRow> Assets { get; } = new();
+    public List<CostCenterRow> CostCenters { get; } = new();
+    public List<BudgetRow> Budgets { get; } = new();
 
     public UserProfile? Authenticate(string username, string password)
     {
@@ -129,6 +133,18 @@ public sealed class AppStore
 
         var inventory = Get<List<InventoryRow>>("api/inventory");
         Inventory.Clear(); Inventory.AddRange(inventory);
+
+        var taxes = Get<List<TaxRow>>("api/tax");
+        Taxes.Clear(); Taxes.AddRange(taxes);
+
+        var assets = Get<List<AssetRow>>("api/assets");
+        Assets.Clear(); Assets.AddRange(assets);
+
+        var costCenters = Get<List<CostCenterRow>>("api/cost-centers");
+        CostCenters.Clear(); CostCenters.AddRange(costCenters);
+
+        var budgets = Get<List<BudgetRow>>("api/budgets?year=" + DateTime.Now.Year);
+        Budgets.Clear(); Budgets.AddRange(budgets);
     }
 
     private T Get<T>(string path)
@@ -167,3 +183,8 @@ public sealed record InventoryRow(long Id, int ItemId, DateTime Date, decimal Qu
 
 public sealed record SupplierRow(int Id, string Code, string Name, string Phone, decimal Balance);
 public sealed record CompanyRow(int Id, string Code, string Name, string TaxNumber, string Currency, bool IsActive);
+
+public sealed record TaxRow(int Id, string Code, string Name, decimal Rate, bool IsSales, bool IsPurchase, bool IsActive);
+public sealed record AssetRow(int Id, string Code, string Name, DateTime AcquisitionDate, decimal Cost, decimal AccumulatedDepreciation, int UsefulLifeMonths, bool IsActive);
+public sealed record CostCenterRow(int Id, string Code, string Name, bool IsActive);
+public sealed record BudgetRow(long Id, int AccountId, int Year, int Month, decimal Amount);
