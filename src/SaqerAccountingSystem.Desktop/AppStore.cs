@@ -455,8 +455,8 @@ public sealed record LegacyOverviewRow(
 
 public sealed record LegacyAccountRow(
     int Id, int? AccountNo, string Name, string EnglishName, int? Level, int? FinalAccount,
-    int? AccountType, int? Nature, int? BranchId, decimal PrivDebit, decimal PrivCredit, int? Suspended);
-
+    int? AccountType, int? Nature, int? BranchId, decimal PrivDebit, decimal PrivCredit,
+    decimal Debit, decimal Credit, int? Suspended);
 public sealed record LegacyPartyRow(
     int Id, int? Code, int? AccountNo, int? BranchId, string Name, string VatNumber, string Phone,
     bool IsCustomer, bool IsSupplier, decimal CreditLimit, decimal AlarmLimit);
