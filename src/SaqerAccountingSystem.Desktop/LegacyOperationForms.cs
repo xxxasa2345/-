@@ -188,11 +188,11 @@ internal sealed class LegacyInvoiceForm : Form
         _mainAccount.DisplayMember = nameof(AccountRow.Name);
         _mainAccount.ValueMember = nameof(AccountRow.Id);
         _vatAccount.DataSource = _store.Accounts.ToArray();
-        _vatAccount.DisplayMember = nameof(AccountRowDisplay.Name);
-        _vatAccount.ValueMember = nameof(AccountRowDisplay.Id);
+        _vatAccount.DisplayMember = nameof(AccountRow.Name);
+        _vatAccount.ValueMember = nameof(AccountRow.Id);
         _settlementAccount.DataSource = _store.Accounts.ToArray();
-        _settlementAccount.DisplayMember = nameof(AccountRowDisplay.Name);
-        _settlementAccount.ValueMember = nameof(AccountRowDisplay.Id);
+        _settlementAccount.DisplayMember = nameof(AccountRow.Name);
+        _settlementAccount.ValueMember = nameof(AccountRow.Id);
 
         SelectAccount(_mainAccount, _purchase ? new[]{"مخزون","مشتريات"} : new[]{"مبيعات","إيراد"});
         SelectAccount(_vatAccount, new[]{"ضريبة","vat"});
