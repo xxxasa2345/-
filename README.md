@@ -1,41 +1,39 @@
-# نظام صقر للمحاسبة
+# Saqer Accounting System
 
-نسخة تشغيلية أولية من نظام صقر للمحاسبة مبنية على .NET 8 وASP.NET Core، مع واجهة عربية وتدفق صلاحيات:
+Saqer Accounting System is a modular accounting and ERP starter project for small and medium businesses. It includes the core domain for accounting, customer/supplier management, invoice storage, and financial journaling.
 
-Login → Group → Permission → Screen → Operation
+## Architecture
 
-## الموجود الآن
+- Domain: core entities and business rules
+- Application: services and use cases
+- Infrastructure: EF Core data access and database context
+- API: ASP.NET Core REST API to expose the system
 
-- واجهة ويب عربية RTL متجاوبة.
-- تسجيل الدخول والخروج.
-- مجموعات مستخدمين.
-- صلاحيات مرتبطة بالشاشات.
-- قائمة جانبية ديناميكية حسب الصلاحية.
-- لوحة تحكم.
-- شاشات الشركات والفروع والعملاء والموردين والأصناف والمبيعات والمشتريات والحسابات والمخزون والتقارير.
-- API.
-- Swagger.
+## Stack
 
-## الحسابات التجريبية
+- .NET 8
+- ASP.NET Core Web API
+- Entity Framework Core
+- SQL Server
 
-- `admin / admin123`
-- `accountant / 123456`
+## Quick start
 
-## التشغيل
+1. Open the solution in Visual Studio or VS Code.
+2. Restore NuGet packages.
+3. Set the connection string in `src/SaqerAccountingSystem.API/appsettings.json`.
+4. Run the API project.
 
-```bash
-dotnet restore
-dotnet run --project src/SaqerAccountingSystem.API
-```
+## Current milestone
 
-بعد التشغيل افتح عنوان HTTPS الذي يظهر في الطرفية.
+This repository contains the initial project skeleton, domain entities, and the foundational accounting services.
 
-Swagger:
-`https://localhost:5001/swagger`
+## Planned modules
 
-## الخطوة التالية
-
-الربط مع EF Core وSQL Server، ثم تحويل البيانات التجريبية إلى CRUD فعلي، ثم تطبيق صلاحيات دقيقة على مستوى العمليات مثل:
-Create / Read / Update / Delete / Approve.
-
-> ملف `a-main.zip` هو المصدر القديم للمراجعة. التشغيل الحالي يعتمد على المشروع المباشر داخل `src/SaqerAccountingSystem.API`.
+- Companies and branches
+- Chart of accounts
+- Journal entries
+- Customers and suppliers
+- Inventory items
+- Sales and purchase invoices
+- Payment processing
+- Reports and dashboards
