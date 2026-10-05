@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using SaqerAccountingSystem.Application;
 using SaqerAccountingSystem.Domain;
@@ -8,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
 var connection = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("DefaultConnection is not configured.");
@@ -178,7 +180,11 @@ app.MapGet("/api/items", async (AccountingDbContext db) => Results.Ok(await db.I
    .RequirePermission("items.view");
 app.MapPost("/api/items", async (Item input, AccountingDbContext db, HttpContext ctx) =>
 {
-    input.Id = 0; db.Items.Add(input); await db.SaveChangesAsync();
+    input.Id = 0;
+    if (input.InventoryAccountId == 0) input.InventoryAccountId = await FindAccountId(db, input.CompanyId, "1301");
+    if (input.SalesAccountId == 0) input.SalesAccountId = await FindAccountId(db, input.CompanyId, "4101");
+    if (input.CostAccountId == 0) input.CostAccountId = await FindAccountId(db, input.CompanyId, "5101");
+    db.Items.Add(input); await db.SaveChangesAsync();
     await Audit(db, ctx, "CREATE", "Item", input.Id, input.Name);
     return Results.Created("/api/items/" + input.Id, input);
 }).RequirePermission("items.create");
@@ -191,12 +197,13 @@ app.MapGet("/api/accounts", async (AccountingDbContext db) =>
         .GroupBy(x => x.AccountId)
         .Select(g => new { g.Key, Debit = g.Sum(x => x.Debit), Credit = g.Sum(x => x.Credit) })
         .ToDictionaryAsync(x => x.Key);
-    return Results.Ok(accounts.Select(a => new
+    return Results.Ok(accounts.Select(a =>
     {
-        id = a.Id, code = a.Code, name = a.Name, type = a.Type.ToString(),
-        balance = a.Type is AccountType.Asset or AccountType.Expense
-            ? (balances.TryGetValue(a.Id, out var b) ? b.Debit - b.Credit : 0m)
-            : (balances.TryGetValue(a.Id, out var b) ? b.Credit - b.Debit : 0m)
+        var found = balances.TryGetValue(a.Id, out var b);
+        var raw = found ? b : null;
+        var balance = raw == null ? 0m :
+            a.Type is AccountType.Asset or AccountType.Expense ? raw.Debit - raw.Credit : raw.Credit - raw.Debit;
+        return new { id = a.Id, code = a.Code, name = a.Name, type = a.Type.ToString(), balance };
     }));
 }).RequirePermission("accounts.view");
 app.MapPost("/api/accounts", async (Account input, AccountingDbContext db, HttpContext ctx) =>
@@ -566,7 +573,8 @@ app.MapGet("/api/dashboard", async (AccountingDbContext db) =>
     var today = DateTime.UtcNow.Date;
     var sales = await db.SalesInvoices.Where(x => x.Date == today && x.Status != DocumentStatus.Cancelled).SumAsync(x => (decimal?)x.Total) ?? 0;
     var purchases = await db.PurchaseInvoices.Where(x => x.Date == today && x.Status != DocumentStatus.Cancelled).SumAsync(x => (decimal?)x.Total) ?? 0;
-    var receivables = await AccountBalance(db, "1201");
+    var companyId = await db.Companies.AsNoTracking().OrderBy(x => x.Id).Select(x => x.Id).FirstOrDefaultAsync();
+    var receivables = companyId == 0 ? 0m : await AccountBalance(db, companyId, "1201");
     var stock = await db.Items.SumAsync(x => (decimal?)x.StockQuantity * x.PurchasePrice) ?? 0;
     return Results.Ok(new
     {
@@ -577,7 +585,7 @@ app.MapGet("/api/dashboard", async (AccountingDbContext db) =>
             new { key = "receivables", title = "ذمم العملاء", value = receivables, trend = 0m },
             new { key = "inventory", title = "قيمة المخزون", value = stock, trend = 0m }
         },
-        recentInvoices = await db.SalesInvoices.AsNoTracking().OrderByDescending(x => x.Id).Take(8).Select(x => new { number = x.Number, party = x.CustomerId, date = x.Date.ToString("yyyy-MM-dd"), amount = x.Total, status = x.Status.ToString() }).ToListAsync(),
+        recentInvoices = await db.SalesInvoices.AsNoTracking().OrderByDescending(x => x.Id).Take(8).Select(x => new { number = x.Number, party = x.CustomerId, date = x.Date, amount = x.Total, status = x.Status.ToString() }).ToListAsync(),
         activity = await db.AuditLogs.AsNoTracking().OrderByDescending(x => x.Id).Take(12).Select(x => new { time = x.CreatedAt, text = x.Action + " " + x.Entity, type = x.Entity }).ToListAsync()
     });
 }).RequirePermission("dashboard.view");
@@ -679,9 +687,9 @@ static List<NavItem> Navigation(string[] permissions)
 static async Task<Account> FindAccount(AccountingDbContext db, int companyId, string code) =>
     await db.Accounts.SingleAsync(x => x.CompanyId == companyId && x.Code == code && x.IsActive);
 
-static async Task<decimal> AccountBalance(AccountingDbContext db, string code) =>
+static async Task<decimal> AccountBalance(AccountingDbContext db, int companyId, string code) =>
     await db.JournalLines.AsNoTracking()
-        .Where(x => x.JournalEntry.Status == DocumentStatus.Approved && x.Account.Code == code)
+        .Where(x => x.JournalEntry.Status == DocumentStatus.Approved && x.JournalEntry.CompanyId == companyId && x.Account.Code == code)
         .SumAsync(x => (decimal?)(x.Debit - x.Credit)) ?? 0;
 
 static async Task Audit(AccountingDbContext db, HttpContext ctx, string action, string entity, long? id, string details)
