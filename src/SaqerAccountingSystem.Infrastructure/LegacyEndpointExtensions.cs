@@ -12,35 +12,35 @@ public static class LegacyEndpointExtensions
 
         group.MapGet("/overview", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetOverviewAsync(ct)))
-            .RequirePermission("dashboard.view");
+            .RequireLegacyPermission("dashboard.view");
 
         group.MapGet("/accounts", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetAccountsAsync(ct)))
-            .RequirePermission("accounts.view");
+            .RequireLegacyPermission("accounts.view");
 
         group.MapGet("/parties", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetPartiesAsync(ct)))
-            .RequirePermission("customers.view");
+            .RequireLegacyPermission("customers.view");
 
         group.MapGet("/items", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetItemsAsync(ct)))
-            .RequirePermission("items.view");
+            .RequireLegacyPermission("items.view");
 
         group.MapGet("/sales", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetSalesAsync(ct)))
-            .RequirePermission("sales.view");
+            .RequireLegacyPermission("sales.view");
 
         group.MapGet("/purchases", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetPurchasesAsync(ct)))
-            .RequirePermission("purchases.view");
+            .RequireLegacyPermission("purchases.view");
 
         group.MapGet("/journals", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetJournalsAsync(ct)))
-            .RequirePermission("journals.view");
+            .RequireLegacyPermission("journals.view");
 
         group.MapGet("/security", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetSecurityAsync(ct)))
-            .RequirePermission("users.manage");
+            .RequireLegacyPermission("users.manage");
 
         group.MapGet("/health", async (MajedSoftLegacyStore store, CancellationToken ct) =>
         {
@@ -49,5 +49,16 @@ public static class LegacyEndpointExtensions
         });
 
         return group;
+    }
+
+    private static RouteHandlerBuilder RequireLegacyPermission(this RouteHandlerBuilder builder, string permission)
+    {
+        return builder.AddEndpointFilter(async (context, next) =>
+        {
+            var permissions = context.HttpContext.Items["permissions"] as string[] ?? [];
+            if (!permissions.Contains(permission, StringComparer.OrdinalIgnoreCase))
+                return Results.Forbid();
+            return await next(context);
+        });
     }
 }
