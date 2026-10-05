@@ -35,7 +35,8 @@ app.Use(async (context, next) =>
     var path = context.Request.Path.Value ?? "";
     if (!path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ||
         path.Equals("/api/health", StringComparison.OrdinalIgnoreCase) ||
-        path.StartsWith("/api/auth/login", StringComparison.OrdinalIgnoreCase))
+        path.StartsWith("/api/auth/login", StringComparison.OrdinalIgnoreCase) ||
+        path.StartsWith("/api/legacy/auth/login", StringComparison.OrdinalIgnoreCase))
     {
         await next();
         return;
