@@ -1,6 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 
 namespace SaqerAccountingSystem.Desktop;
 
@@ -16,79 +16,143 @@ public sealed record ModuleInfo(string Key, string Title, string Permission);
 
 public sealed class AppStore
 {
-    public IReadOnlyList<UserProfile> Users { get; } = new[]
+    private readonly HttpClient _http;
+    private readonly JsonSerializerOptions _json = new(JsonSerializerDefaults.Web);
+    private string _token = "";
+
+    public AppStore()
     {
-        new UserProfile(1, "admin", "مدير النظام", "Administrators", "admin123",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "dashboard", "companies", "customers", "suppliers", "items",
-                "sales", "purchases", "accounts", "inventory", "journals", "reports", "settings"
-            }),
-        new UserProfile(2, "accountant", "المحاسب", "Accountants", "123456",
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "dashboard", "customers", "suppliers", "items",
-                "sales", "purchases", "accounts", "inventory", "journals", "reports"
-            })
-    };
+        var url = Environment.GetEnvironmentVariable("SAQER_API_URL") ?? "http://localhost:5000";
+        _http = new HttpClient { BaseAddress = new Uri(url.TrimEnd('/') + "/"), Timeout = TimeSpan.FromSeconds(30) };
+    }
 
     public IReadOnlyList<ModuleInfo> Modules { get; } = new[]
     {
-        new ModuleInfo("dashboard", "لوحة التحكم", "dashboard"),
-        new ModuleInfo("companies", "الشركات والفروع", "companies"),
-        new ModuleInfo("customers", "العملاء", "customers"),
-        new ModuleInfo("suppliers", "الموردون", "suppliers"),
-        new ModuleInfo("items", "الأصناف", "items"),
-        new ModuleInfo("sales", "المبيعات", "sales"),
-        new ModuleInfo("purchases", "المشتريات", "purchases"),
-        new ModuleInfo("accounts", "دليل الحسابات", "accounts"),
-        new ModuleInfo("inventory", "المخزون", "inventory"),
-        new ModuleInfo("journals", "القيود اليومية", "journals"),
-        new ModuleInfo("reports", "التقارير", "reports"),
-        new ModuleInfo("settings", "الإعدادات", "settings")
+        new ModuleInfo("dashboard","لوحة التحكم","dashboard.view"),
+        new ModuleInfo("companies","الشركات والفروع","companies.view"),
+        new ModuleInfo("customers","العملاء والذمم","customers.view"),
+        new ModuleInfo("suppliers","الموردون والدائنون","suppliers.view"),
+        new ModuleInfo("items","الأصناف","items.view"),
+        new ModuleInfo("sales","المبيعات","sales.view"),
+        new ModuleInfo("purchases","المشتريات","purchases.view"),
+        new ModuleInfo("accounts","دليل الحسابات","accounts.view"),
+        new ModuleInfo("journals","القيود والأستاذ العام","journals.view"),
+        new ModuleInfo("payments","الخزينة والبنوك","payments.view"),
+        new ModuleInfo("inventory","المخزون","inventory.view"),
+        new ModuleInfo("tax","الضريبة","tax.view"),
+        new ModuleInfo("assets","الأصول الثابتة","assets.view"),
+        new ModuleInfo("costcenters","مراكز التكلفة","costcenters.view"),
+        new ModuleInfo("budgets","الموازنات","budgets.view"),
+        new ModuleInfo("reports","التقارير المالية","reports.view"),
+        new ModuleInfo("settings","الإعدادات","settings.view")
     };
 
-    public List<InvoiceRow> Sales { get; } = new()
+    public List<InvoiceRow> Sales { get; } = new();
+    public List<InvoiceRow> Purchases { get; } = new();
+    public List<ItemRow> Items { get; } = new();
+    public List<CustomerRow> Customers { get; } = new();
+    public List<AccountRow> Accounts { get; } = new();
+    public List<PaymentRow> Payments { get; } = new();
+    public List<JournalRow> Journals { get; } = new();
+    public List<InventoryRow> Inventory { get; } = new();
+
+    public UserProfile? Authenticate(string username, string password)
     {
-        new(2048, "INV-2048", "مؤسسة النخبة", new DateTime(2026, 10, 5), 18500m, "معتمدة"),
-        new(2047, "INV-2047", "شركة الرؤية", new DateTime(2026, 10, 5), 9200m, "مدفوعة"),
-        new(2046, "INV-2046", "مؤسسة المدار", new DateTime(2026, 10, 4), 6400m, "مسودة")
-    };
+        try
+        {
+            var payload = JsonSerializer.Serialize(new { username, password }, _json);
+            using var request = new HttpRequestMessage(HttpMethod.Post, "api/auth/login")
+            {
+                Content = new StringContent(payload, Encoding.UTF8, "application/json")
+            };
+            using var response = _http.Send(request);
+            if (!response.IsSuccessStatusCode) return null;
 
-    public List<InvoiceRow> Purchases { get; } = new()
+            using var document = JsonDocument.Parse(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+            var root = document.RootElement;
+            _token = root.GetProperty("token").GetString() ?? "";
+            var user = root.GetProperty("user");
+            var groups = root.TryGetProperty("groups", out var gs) && gs.GetArrayLength() > 0
+                ? gs[0].GetProperty("name").GetString() ?? ""
+                : "";
+            var permissions = root.GetProperty("permissions").EnumerateArray()
+                .Select(x => x.GetString() ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            Refresh();
+
+            return new UserProfile(
+                user.GetProperty("id").GetInt32(),
+                user.GetProperty("username").GetString() ?? username,
+                user.GetProperty("fullName").GetString() ?? username,
+                groups, password, permissions);
+        }
+        catch
+        {
+            _token = "";
+            return null;
+        }
+    }
+
+    public void Refresh()
     {
-        new(1021, "PUR-1021", "شركة التوريد الحديثة", new DateTime(2026, 10, 4), 27400m, "معتمدة")
-    };
+        if (string.IsNullOrWhiteSpace(_token)) return;
+        var data = Get<List<JsonElement>>("api/sales");
+        Sales.Clear();
+        Sales.AddRange(data.Select(x => InvoiceFromJson(x)).Where(x => x is not null)!);
 
-    public List<ItemRow> Items { get; } = new()
+        var purchases = Get<List<JsonElement>>("api/purchases");
+        Purchases.Clear();
+        Purchases.AddRange(purchases.Select(x => InvoiceFromJson(x)).Where(x => x is not null)!);
+
+        var items = Get<List<ItemRow>>("api/items");
+        Items.Clear(); Items.AddRange(items);
+
+        var customers = Get<List<CustomerRow>>("api/customers");
+        Customers.Clear(); Customers.AddRange(customers);
+
+        var accounts = Get<List<AccountRow>>("api/accounts");
+        Accounts.Clear(); Accounts.AddRange(accounts);
+
+        var payments = Get<List<PaymentRow>>("api/payments");
+        Payments.Clear(); Payments.AddRange(payments);
+
+        var journals = Get<List<JournalRow>>("api/journals");
+        Journals.Clear(); Journals.AddRange(journals);
+
+        var inventory = Get<List<InventoryRow>>("api/inventory");
+        Inventory.Clear(); Inventory.AddRange(inventory);
+    }
+
+    private T Get<T>(string path)
     {
-        new(1, "IT-001", "حاسب محمول", 32m, 3200m),
-        new(2, "IT-002", "طابعة ليزر", 18m, 950m),
-        new(3, "IT-003", "حبر طابعة", 74m, 180m)
-    };
+        using var request = new HttpRequestMessage(HttpMethod.Get, path);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+        using var response = _http.Send(request);
+        response.EnsureSuccessStatusCode();
+        return JsonSerializer.Deserialize<T>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult(), _json) ?? throw new InvalidOperationException("Empty API response.");
+    }
 
-    public List<CustomerRow> Customers { get; } = new()
+    private static InvoiceRow? InvoiceFromJson(JsonElement x)
     {
-        new(1, "C-1001", "مؤسسة النخبة", "0500000001", 48200m),
-        new(2, "C-1002", "شركة الرؤية", "0500000002", 18500m),
-        new(3, "C-1003", "مؤسسة المدار", "0500000003", 7200m)
-    };
-
-    public List<AccountRow> Accounts { get; } = new()
-    {
-        new("1101", "الصندوق", "أصول متداولة", 152400m),
-        new("1102", "البنك", "أصول متداولة", 482600m),
-        new("2101", "الموردون", "التزامات", 164900m),
-        new("4101", "إيرادات المبيعات", "إيرادات", 1284500m)
-    };
-
-    public UserProfile? Authenticate(string username, string password) =>
-        Users.FirstOrDefault(x =>
-            x.Username.Equals(username, StringComparison.OrdinalIgnoreCase) &&
-            x.Password == password);
+        try
+        {
+            var id = x.GetProperty("id").GetInt64();
+            var number = x.GetProperty("number").GetString() ?? "";
+            var date = x.GetProperty("date").GetDateTime();
+            var amount = x.GetProperty("total").GetDecimal();
+            var status = x.GetProperty("status").GetString() ?? "";
+            var party = x.TryGetProperty("customerId", out var c) ? "عميل #" + c.ToString() :
+                        x.TryGetProperty("supplierId", out var s) ? "مورد #" + s.ToString() : "";
+            return new InvoiceRow(id, number, party, date, amount, status);
+        }
+        catch { return null; }
+    }
 }
 
-public sealed record InvoiceRow(int Id, string Number, string Party, DateTime Date, decimal Amount, string Status);
-public sealed record ItemRow(int Id, string Code, string Name, decimal Stock, decimal SalePrice);
+public sealed record InvoiceRow(long Id, string Number, string Party, DateTime Date, decimal Amount, string Status);
+public sealed record ItemRow(int Id, string Code, string Name, decimal StockQuantity, decimal SalePrice);
 public sealed record CustomerRow(int Id, string Code, string Name, string Phone, decimal Balance);
-public sealed record AccountRow(string Code, string Name, string Type, decimal Balance);
+public sealed record AccountRow(int Id, string Code, string Name, string Type, decimal Balance);
+public sealed record PaymentRow(long Id, string Number, string PartyType, decimal Amount, string Method, DateTime Date);
+public sealed record JournalRow(long Id, string Number, DateTime Date, string Description, string Status);
+public sealed record InventoryRow(long Id, int ItemId, DateTime Date, decimal QuantityIn, decimal QuantityOut, decimal UnitCost);
