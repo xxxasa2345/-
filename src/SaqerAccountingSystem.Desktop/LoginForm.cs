@@ -94,10 +94,10 @@ public sealed class LoginForm : Form
         card.Controls.Add(heading);
 
         AddLabel(card, "اسم المستخدم", 28, 90);
-        _username = AddTextBox(card, "admin", 28, 120);
+        _username = AddTextBox(card, "مدير", 28, 120);
 
         AddLabel(card, "كلمة المرور", 28, 175);
-        _password = AddTextBox(card, "admin123", 28, 205);
+        _password = AddTextBox(card, "", 28, 205);
         _password.UseSystemPasswordChar = true;
 
         var login = new Button
@@ -112,7 +112,7 @@ public sealed class LoginForm : Form
 
         var info = new Label
         {
-            Text = "الحسابات الأولية تُنشأ في قاعدة البيانات عند أول تشغيل.",
+            Text = "يتم التحقق من الحسابات والصلاحيات من قاعدة GtsDb2026.",
             Font = new Font("Tahoma", 9F),
             ForeColor = Theme.Muted,
             AutoSize = true,
@@ -164,7 +164,7 @@ public sealed class LoginForm : Form
         var user = _store.Authenticate(_username.Text.Trim(), _password.Text);
         if (user is null)
         {
-            _error.Text = "بيانات الدخول غير صحيحة.";
+            _error.Text = "اسم المستخدم أو كلمة المرور غير صحيحة.";
             return;
         }
 
