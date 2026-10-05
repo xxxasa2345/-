@@ -13,7 +13,7 @@ public static class LegacyWriteEndpointExtensions
         group.MapPost("/journals", async (
             LegacyJournalWriteRequest request,
             HttpContext ctx,
-            MajedSoftLegacyWriteStore store,
+            Microsoft.Extensions.Configuration.IConfiguration config,
             CancellationToken ct) =>
         {
             if (!HasLegacyPermission(ctx, "journals.create"))
@@ -21,6 +21,7 @@ public static class LegacyWriteEndpointExtensions
 
             var session = GetLegacySession(ctx);
             if (session is null) return Results.Unauthorized();
+            var store = new MajedSoftLegacyWriteStore(config);
 
             try
             {
