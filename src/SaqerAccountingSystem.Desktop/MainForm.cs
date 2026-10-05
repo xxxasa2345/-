@@ -193,11 +193,24 @@ public sealed class MainForm : Form
             "items" => GridScreen("الأصناف", _store.Items.Select(x => new { المعرف = x.Id, x.Code, x.Name, الرصيد = x.StockQuantity, السعر = x.SalePrice }).ToArray()),
             "sales" => SalesScreen(),
             "purchases" => PurchasesScreen(),
+            "sales-returns" => GridScreen("مرتجعات المبيعات - بيانات فعلية", _store.SalesReturns.Select(x => new
+            {
+                المعرف = x.Id, x.Number, x.Party, التاريخ = x.Date == DateTime.MinValue ? "" : x.Date.ToString("yyyy-MM-dd"),
+                المبلغ = x.Amount, الحالة = x.Status
+            }).ToArray()),
+            "purchase-returns" => GridScreen("مرتجعات المشتريات - بيانات فعلية", _store.PurchaseReturns.Select(x => new
+            {
+                المعرف = x.Id, x.Number, x.Party, التاريخ = x.Date == DateTime.MinValue ? "" : x.Date.ToString("yyyy-MM-dd"),
+                المبلغ = x.Amount, الحالة = x.Status
+            }).ToArray()),
             "accounts" => AccountsScreen(),
             "journals" => JournalsScreen(),
             "payments" => GridScreen("الخزينة والبنوك", _store.Payments.Select(x => new { المعرف = x.Id, x.Number, x.PartyType, x.Amount, x.Method, التاريخ = x.Date.ToString("yyyy-MM-dd") }).ToArray()),
-            "inventory" => GridScreen("حركات المخزون", _store.Inventory.Select(x => new { المعرف = x.Id, x.ItemId, التاريخ = x.Date.ToString("yyyy-MM-dd"), وارد = x.QuantityIn, صادر = x.QuantityOut, x.UnitCost }).ToArray()),
+            "inventory" => _store.IsLegacyMode
+                ? GridScreen("أرصدة المخزون الفعلية حسب المخزن", _store.StockBalances.Select(x => new { x.ItemId, x.ItemCode, x.ItemName, المخزن = x.StoreName, الرصيد = x.CurrentBalance, عدد_الوحدات = x.UnitNumber }).ToArray())
+                : GridScreen("حركات المخزون", _store.Inventory.Select(x => new { المعرف = x.Id, x.ItemId, التاريخ = x.Date.ToString("yyyy-MM-dd"), وارد = x.QuantityIn, صادر = x.QuantityOut, x.UnitCost }).ToArray()),
             "tax" => GridScreen("الضرائب", _store.Taxes.Select(x => new { المعرف = x.Id, x.Code, x.Name, النسبة = x.Rate, مبيعات = x.IsSales, مشتريات = x.IsPurchase }).ToArray()),
+            "stores" => GridScreen("المخازن الفعلية", _store.Stores.Select(x => new { المعرف = x.Id, x.Name, x.BranchId, x.Address, x.Phone }).ToArray()),
             "assets" => GridScreen("الأصول الثابتة", _store.Assets.Select(x => new { المعرف = x.Id, x.Code, x.Name, التكلفة = x.Cost, مجمع_الإهلاك = x.AccumulatedDepreciation, العمر = x.UsefulLifeMonths }).ToArray()),
             "costcenters" => GridScreen("مراكز التكلفة", _store.CostCenters.Select(x => new { المعرف = x.Id, x.Code, x.Name, الحالة = x.IsActive ? "نشط" : "متوقف" }).ToArray()),
             "budgets" => GridScreen("الموازنات", _store.Budgets.Select(x => new { المعرف = x.Id, x.AccountId, x.Year, x.Month, x.Amount }).ToArray()),
@@ -633,14 +646,35 @@ public sealed class MainForm : Form
     {
         var panel = new Panel { BackColor = Theme.Background };
         var top = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 70 };
-        panel.Controls.Add(top);
+        var output = new TextBox
+        {
+            Multiline = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Both,
+            Font = new Font("Consolas", 9F), ReadOnly = true, BackColor = Color.White
+        };
 
-        var output = new TextBox { Multiline = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Both, Font = new Font("Consolas",9F), ReadOnly = true };
         panel.Controls.Add(output);
+        panel.Controls.Add(top);
+        top.BringToFront();
 
         AddReportButton(top, "ميزان المراجعة", "trial-balance", output);
-        AddReportButton(top, "قائمة الدخل", "income-statement", output);
-        AddReportButton(top, "الميزانية العمومية", "balance-sheet", output);
+        if (!_store.IsLegacyMode)
+        {
+            AddReportButton(top, "قائمة الدخل", "income-statement", output);
+            AddReportButton(top, "الميزانية العمومية", "balance-sheet", output);
+        }
+        else
+        {
+            var info = new Label
+            {
+                AutoSize = true,
+                Text = "التقرير يُقرأ مباشرة من قيود GTS الفعلية.",
+                Font = new Font("Tahoma", 9F, FontStyle.Bold),
+                ForeColor = Theme.Muted,
+                Margin = new Padding(12, 10, 0, 0)
+            };
+            top.Controls.Add(info);
+        }
+
         return panel;
     }
 
