@@ -370,8 +370,31 @@ public sealed class MajedSoftLegacyStore
                 return true;
         }
 
-        var base64 = Convert.ToBase64String(SHA256.HashData(input));
-        return string.Equals(stored, base64, StringComparison.Ordinal);
+        var base64Sha256 = Convert.ToBase64String(SHA256.HashData(input));
+        if (string.Equals(stored, base64Sha256, StringComparison.Ordinal))
+            return true;
+
+        if (TryVerifyBase64Digest(stored, MD5.HashData(input)))
+            return true;
+
+        var unicodeInput = Encoding.Unicode.GetBytes(supplied);
+        if (TryVerifyBase64Digest(stored, MD5.HashData(unicodeInput)))
+            return true;
+
+        return TryVerifyBase64Digest(stored, SHA256.HashData(unicodeInput));
+    }
+
+    private static bool TryVerifyBase64Digest(string stored, byte[] digest)
+    {
+        try
+        {
+            var encoded = Convert.ToBase64String(digest);
+            return string.Equals(stored, encoded, StringComparison.Ordinal);
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static void AddCanonicalPermissions(HashSet<string> target, LegacyScreenAccessDto screen)
