@@ -346,7 +346,7 @@ public sealed class AppStore
         {
             var rows = TryGet<List<LegacyAccountRow>>("api/legacy/accounts") ?? new();
             Accounts.AddRange(rows.Select(x =>
-                new AccountRow(x.Id, x.AccountNo?.ToString() ?? "", x.Name, "Legacy", x.PrivDebit - x.PrivCredit)));
+                new AccountRow(x.Id, x.AccountNo?.ToString() ?? "", x.Name, "Legacy", x.Debit - x.Credit)));
         }
 
         if (HasPermission("journals.view"))
