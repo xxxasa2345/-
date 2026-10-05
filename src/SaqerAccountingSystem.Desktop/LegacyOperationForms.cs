@@ -153,7 +153,7 @@ internal sealed class LegacyInvoiceForm : Form
             if (_item.SelectedItem is ItemRow item)
             {
                 _price.Value = Clamp(item.SalePrice);
-                _vat.Value = Clamp(item.TaxRateFromLegacy());
+                _vat.Value = Clamp(15m);
             }
         };
     }
@@ -185,8 +185,8 @@ internal sealed class LegacyInvoiceForm : Form
         _item.DropDownStyle = ComboBoxStyle.DropDownList;
 
         _mainAccount.DataSource = _store.Accounts.ToArray();
-        _mainAccount.DisplayMember = nameof(AccountRowDisplay.Name);
-        _mainAccount.ValueMember = nameof(AccountRowDisplay.Id);
+        _mainAccount.DisplayMember = nameof(AccountRow.Name);
+        _mainAccount.ValueMember = nameof(AccountRow.Id);
         _vatAccount.DataSource = _store.Accounts.ToArray();
         _vatAccount.DisplayMember = nameof(AccountRowDisplay.Name);
         _vatAccount.ValueMember = nameof(AccountRowDisplay.Id);
@@ -348,12 +348,6 @@ internal sealed class LegacyInvoiceForm : Form
         parent.Controls.Add(control);
     }
 
-    private static class AccountRowDisplay
-    {
-        public static string Name(AccountRow a) => $"{a.Code} - {a.Name}";
-        public static int Id(AccountRow a) => a.Id;
-    }
-
     private sealed record PaymentChoice(int Id, string Name);
 }
 
@@ -459,7 +453,7 @@ internal sealed class LegacyJournalForm : Form
             foreach (DataGridViewRow r in _grid.Rows)
             {
                 if (r.IsNewRow) continue;
-                var accountId = r.Cells["accountId"].Value is int id ? id : Convert.ToInt32(r.Cells["accountId"].Value);
+                var accountId = r.Cells["accountId"].Value is AccountChoice choice ? choice.Id : Convert.ToInt32(r.Cells["accountId"].Value);
                 var debit = ToDecimal(r.Cells["debit"].Value);
                 var credit = ToDecimal(r.Cells["credit"].Value);
                 if (accountId <= 0 || (debit == 0 && credit == 0)) continue;
