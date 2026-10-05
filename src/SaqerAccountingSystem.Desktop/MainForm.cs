@@ -24,7 +24,10 @@ public sealed class MainForm : Form
         RightToLeft = RightToLeft.Yes;
         RightToLeftLayout = true;
         Build();
-        ShowModule("dashboard");
+        var firstModule = _store.Modules
+            .FirstOrDefault(x => _user.Permissions.Contains(x.Permission, StringComparer.OrdinalIgnoreCase));
+        if (firstModule is not null)
+            ShowModule(firstModule.Key);
     }
 
     private void Build()
@@ -101,6 +104,20 @@ public sealed class MainForm : Form
 
     private void ShowModule(string key)
     {
+        var module = _store.Modules.FirstOrDefault(x => x.Key == key);
+        if (module is null || !_user.Permissions.Contains(module.Permission, StringComparer.OrdinalIgnoreCase))
+        {
+            _content.Controls.Clear();
+            _content.Controls.Add(new Label
+            {
+                Text = "لا تملك صلاحية فتح هذه الشاشة.",
+                AutoSize = true,
+                ForeColor = Color.Maroon,
+                Location = new Point(20, 20)
+            });
+            return;
+        }
+
         try { _store.Refresh(); }
         catch (Exception ex)
         {
@@ -110,7 +127,7 @@ public sealed class MainForm : Form
         }
 
         _content.Controls.Clear();
-        var module = _store.Modules.FirstOrDefault(x => x.Key == key);
+        module = _store.Modules.FirstOrDefault(x => x.Key == key);
         _title.Text = module?.Title ?? "النظام";
 
         Control view = key switch
