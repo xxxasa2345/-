@@ -65,6 +65,7 @@ public sealed class AppStore
     public List<CustomerRow> Customers { get; } = new();
     public List<SupplierRow> Suppliers { get; } = new();
     public List<CompanyRow> Companies { get; } = new();
+    public List<BranchRow> Branches { get; } = new();
     public List<AccountRow> Accounts { get; } = new();
     public List<PaymentRow> Payments { get; } = new();
     public List<JournalRow> Journals { get; } = new();
@@ -338,6 +339,7 @@ public sealed class AppStore
         Suppliers.Clear();
         Accounts.Clear();
         Companies.Clear();
+        Branches.Clear();
         Payments.Clear();
         Journals.Clear();
         Inventory.Clear();
@@ -386,10 +388,10 @@ public sealed class AppStore
             var rows = TryGet<List<LegacyPartyRow>>("api/legacy/parties") ?? new();
             if (HasPermission("customers.view"))
                 Customers.AddRange(rows.Where(x => x.IsCustomer).Select(x =>
-                    new CustomerRow(x.Id, x.Code?.ToString() ?? "", x.Name, x.Phone, 0)));
+                    new CustomerRow(x.Id, x.Code?.ToString() ?? "", x.Name, x.Phone, x.Balance)));
             if (HasPermission("suppliers.view"))
                 Suppliers.AddRange(rows.Where(x => x.IsSupplier).Select(x =>
-                    new SupplierRow(x.Id, x.Code?.ToString() ?? "", x.Name, x.Phone, 0)));
+                    new SupplierRow(x.Id, x.Code?.ToString() ?? "", x.Name, x.Phone, x.Balance)));
         }
 
         if (HasPermission("accounts.view"))
@@ -404,6 +406,13 @@ public sealed class AppStore
             var rows = TryGet<List<LegacyJournalRow>>("api/legacy/journals") ?? new();
             Journals.AddRange(rows.Select(x =>
                 new JournalRow(x.Id, x.DocCode ?? x.Id.ToString(), x.Date ?? DateTime.MinValue, x.Note, "Legacy")));
+        }
+
+        if (HasPermission("companies.view"))
+        {
+            var rows = TryGet<List<LegacyBranchDto>>("api/legacy/branches") ?? new();
+            Branches.AddRange(rows.Select(x =>
+                new BranchRow(x.Id, x.Name, x.AccountNo, x.Phone, x.Fax, x.Address)));
         }
 
         if (HasPermission("items.view"))
@@ -647,3 +656,5 @@ public sealed record DashboardActivityRow(DateTime Time, string Text, string Typ
 public sealed record StoreRow(int Id, string Name, int? BranchId, string Address, string Phone);
 public sealed record StockBalanceRow(int ItemId, string ItemCode, string ItemName, int StoreId, string StoreName, decimal CurrentBalance, decimal UnitNumber);
 public sealed record LegacyTrialBalanceRow(int Id, int? AccountNo, string AccountName, decimal Debit, decimal Credit, decimal Balance);
+
+public sealed record BranchRow(int Id, string Name, int? AccountNo, string Phone, string Fax, string Address);
