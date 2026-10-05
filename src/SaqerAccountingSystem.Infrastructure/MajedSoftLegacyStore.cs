@@ -39,20 +39,26 @@ public sealed class MajedSoftLegacyStore
     {
         const string sql = """
             SELECT
-                ID,
-                Account_No,
-                Account_Name,
-                E_Account_Name,
-                Account_Level,
-                Final_Account,
-                Account_Type,
-                Account_Nature,
-                BranchID,
-                Priv_Debit,
-                Priv_Credit,
-                Suspended
-            FROM dbo.Account_Accounts
-            ORDER BY Account_No, ID
+                a.ID,
+                a.Account_No,
+                a.Account_Name,
+                a.E_Account_Name,
+                a.Account_Level,
+                a.Final_Account,
+                a.Account_Type,
+                a.Account_Nature,
+                a.BranchID,
+                a.Priv_Debit,
+                a.Priv_Credit,
+                ISNULL(SUM(d.Debit),0) AS Debit,
+                ISNULL(SUM(d.Credit),0) AS Credit,
+                a.Suspended
+            FROM dbo.Account_Accounts a
+            LEFT JOIN dbo.Tran_TranDetails d ON d.Account_Sn = a.ID
+            GROUP BY a.ID, a.Account_No, a.Account_Name, a.E_Account_Name, a.Account_Level,
+                     a.Final_Account, a.Account_Type, a.Account_Nature, a.BranchID,
+                     a.Priv_Debit, a.Priv_Credit, a.Suspended
+            ORDER BY a.Account_No, a.ID
             """;
 
         await using var cn = new SqlConnection(_connectionString);
@@ -75,6 +81,8 @@ public sealed class MajedSoftLegacyStore
                 GetNullableInt(rd, "BranchID"),
                 GetDecimal(rd, "Priv_Debit"),
                 GetDecimal(rd, "Priv_Credit"),
+                GetDecimal(rd, "Debit"),
+                GetDecimal(rd, "Credit"),
                 GetNullableInt(rd, "Suspended")));
         }
         return result;
@@ -459,6 +467,79 @@ public sealed class MajedSoftLegacyStore
     private static bool ContainsAny(string value, params string[] terms)
         => terms.Any(value.Contains);
 
+    public async Task<List<LegacySaleDetailDto>> GetSaleDetailsAsync(int invoiceId, CancellationToken cancellationToken = default)
+    {
+        const string sql = """
+            SELECT d.Purchese_ID, d.ItemID, i.Item_code, i.item_Name, d.StoreID, d.ItemUnitID,
+                   d.Quantity, d.UnitPrice, d.TotalPrice, d.VAT, d.NetTotalPrice
+            FROM dbo.Order_OrdersDetails d
+            LEFT JOIN dbo.Item_Items i ON i.ItemId = d.ItemID
+            WHERE d.Purchese_ID = @ID
+            ORDER BY d.Sn, d.ItemID
+            """;
+
+        return await QueryWithIdAsync(sql, invoiceId, rd => new LegacySaleDetailDto(
+            GetInt(rd, "Purchese_ID"),
+            GetInt(rd, "ItemID"),
+            GetString(rd, "Item_code"),
+            GetString(rd, "item_Name"),
+            GetNullableInt(rd, "StoreID"),
+            GetNullableInt(rd, "ItemUnitID"),
+            GetDecimal(rd, "Quantity"),
+            GetDecimal(rd, "UnitPrice"),
+            GetDecimal(rd, "TotalPrice"),
+            GetDecimal(rd, "VAT"),
+            GetDecimal(rd, "NetTotalPrice")), cancellationToken);
+    }
+
+    public async Task<List<LegacyPurchaseDetailDto>> GetPurchaseDetailsAsync(int invoiceId, CancellationToken cancellationToken = default)
+    {
+        const string sql = """
+            SELECT d.Purchese_ID, d.ItemID, i.Item_code, i.item_Name, d.StoreID, d.ItemUnitID,
+                   d.Quantity, d.UnitPrice, d.TotalPrice, d.VAT, d.NetTotalPrice
+            FROM dbo.Order_PurchasesDetails d
+            LEFT JOIN dbo.Item_Items i ON i.ItemId = d.ItemID
+            WHERE d.Purchese_ID = @ID
+            ORDER BY d.Sn, d.ItemID
+            """;
+
+        return await QueryWithIdAsync(sql, invoiceId, rd => new LegacyPurchaseDetailDto(
+            GetInt(rd, "Purchese_ID"),
+            GetInt(rd, "ItemID"),
+            GetString(rd, "Item_code"),
+            GetString(rd, "item_Name"),
+            GetNullableInt(rd, "StoreID"),
+            GetNullableInt(rd, "ItemUnitID"),
+            GetDecimal(rd, "Quantity"),
+            GetDecimal(rd, "UnitPrice"),
+            GetDecimal(rd, "TotalPrice"),
+            GetDecimal(rd, "VAT"),
+            GetDecimal(rd, "NetTotalPrice")), cancellationToken);
+    }
+
+    public async Task<List<LegacyAccountLedgerDto>> GetAccountLedgerAsync(int accountId, CancellationToken cancellationToken = default)
+    {
+        const string sql = """
+            SELECT t.ID, t.DocCode, t.TranDate, t.Note, d.TranDesc,
+                   d.Debit, d.Credit, d.CostCentersID, d.BranchID
+            FROM dbo.Tran_TranDetails d
+            INNER JOIN dbo.Tran_Tran t ON t.ID = d.TranSn
+            WHERE d.Account_Sn = @ID
+            ORDER BY t.TranDate DESC, t.ID DESC
+            """;
+
+        return await QueryWithIdAsync(sql, accountId, rd => new LegacyAccountLedgerDto(
+            GetInt(rd, "ID"),
+            GetString(rd, "DocCode"),
+            GetNullableDateTime(rd, "TranDate"),
+            GetString(rd, "Note"),
+            GetString(rd, "TranDesc"),
+            GetDecimal(rd, "Debit"),
+            GetDecimal(rd, "Credit"),
+            GetNullableInt(rd, "CostCentersID"),
+            GetNullableInt(rd, "BranchID")), cancellationToken);
+    }
+
     public async Task<LegacySecurityDto> GetSecurityAsync(CancellationToken cancellationToken = default)
     {
         const string usersSql = "SELECT ID, Name, BranchID, GroupID, IsActive FROM dbo.User_Login ORDER BY ID";
@@ -489,6 +570,22 @@ public sealed class MajedSoftLegacyStore
             GetBool(rd, "Allow_Export")), cancellationToken);
 
         return new LegacySecurityDto(users, groups, screens, permissions);
+    }
+
+    private async Task<List<T>> QueryWithIdAsync<T>(
+        string sql,
+        int id,
+        Func<SqlDataReader, T> map,
+        CancellationToken cancellationToken)
+    {
+        await using var cn = new SqlConnection(_connectionString);
+        await cn.OpenAsync(cancellationToken);
+        await using var cmd = new SqlCommand(sql, cn);
+        cmd.Parameters.AddWithValue("@ID", id);
+        await using var rd = await cmd.ExecuteReaderAsync(cancellationToken);
+        var result = new List<T>();
+        while (await rd.ReadAsync(cancellationToken)) result.Add(map(rd));
+        return result;
     }
 
     private async Task<List<T>> QueryAsync<T>(string sql, Func<SqlDataReader,T> map, CancellationToken cancellationToken)
@@ -558,10 +655,13 @@ internal sealed record LegacyStoredUser(
     bool IsActive);
 
 public sealed record LegacyOverview(int Accounts, int Customers, int Suppliers, int Items, int Sales, int Purchases, int JournalHeaders, int Users, int Groups, int Permissions, int Screens);
-public sealed record LegacyAccountDto(int Id, int? AccountNo, string Name, string EnglishName, int? Level, int? FinalAccount, int? AccountType, int? Nature, int? BranchId, decimal PrivDebit, decimal PrivCredit, int? Suspended);
+public sealed record LegacyAccountDto(int Id, int? AccountNo, string Name, string EnglishName, int? Level, int? FinalAccount, int? AccountType, int? Nature, int? BranchId, decimal PrivDebit, decimal PrivCredit, decimal Debit, decimal Credit, int? Suspended);
 public sealed record LegacyPartyDto(int Id, int? Code, int? AccountNo, int? BranchId, string Name, string VatNumber, string Phone, bool IsCustomer, bool IsSupplier, decimal CreditLimit, decimal AlarmLimit);
 public sealed record LegacyItemDto(int Id, string Code, string Name, string EnglishName, int? CategoryId, int? ClassId, int? CompanyId, int? UnitSmall, decimal SellPriceSmall, decimal SellPriceMedium, decimal SellPriceLarge, decimal LastCost, decimal AverageCost, bool IsTax, decimal TaxValue, string VatCode);
 public sealed record LegacySalesDto(int Id, int? BranchId, int? CreditNote, int? SupplierId, string PartyName, DateTime? Date, decimal TotalPrices, decimal Tax, decimal Net, decimal Cash, decimal Bank, decimal Paid, decimal Rest, int? UserId, int? YearId, int? ProjectId, string QrCode, string ElectronicInvoiceType);
+public sealed record LegacySaleDetailDto(int InvoiceId, int ItemId, string ItemCode, string ItemName, int? StoreId, int? UnitId, decimal Quantity, decimal UnitPrice, decimal TotalPrice, decimal Vat, decimal NetTotalPrice);
+public sealed record LegacyPurchaseDetailDto(int InvoiceId, int ItemId, string ItemCode, string ItemName, int? StoreId, int? UnitId, decimal Quantity, decimal UnitPrice, decimal TotalPrice, decimal Vat, decimal NetTotalPrice);
+public sealed record LegacyAccountLedgerDto(int TranId, string DocCode, DateTime? Date, string Note, string Description, decimal Debit, decimal Credit, int? CostCenterId, int? BranchId);
 public sealed record LegacyPurchaseDto(int Id, int? BranchId, int? SupplierId, string SupplierName, DateTime? Date, decimal TotalPrices, decimal Tax, decimal Net, decimal Cash, decimal Bank, int? CashAccount, int? BankAccount, int? UserId, int? YearId, int? ProjectId);
 public sealed record LegacyJournalDto(int Id, int? ReferenceCode, int? TypeId, string DocCode, DateTime? Date, string Note, int? BranchId, int? UserId, int? YearId, int? ProjectId, decimal Debit, decimal Credit);
 public sealed record LegacyUserDto(int Id, string Name, int? BranchId, int? GroupId, bool IsActive);
