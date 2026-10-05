@@ -258,7 +258,7 @@ internal sealed class LegacyInvoiceForm : Form
                 new LegacyInvoiceLineWriteClientRequest(
                     Convert.ToInt32(row.Cells["itemId"].Value),
                     Convert.ToInt32(row.Cells["store"].Value),
-                    0,
+                    FindItem(Convert.ToInt32(row.Cells["itemId"].Value))?.UnitSmall ?? 0,
                     "الصغرى",
                     ToDecimal(row.Cells["qty"].Value),
                     ToDecimal(row.Cells["price"].Value),
