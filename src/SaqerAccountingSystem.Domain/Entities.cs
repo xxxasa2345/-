@@ -102,6 +102,8 @@ public sealed class JournalLine
     public decimal Credit { get; set; }
     [MaxLength(500)] public string Description { get; set; } = "";
     public int? CostCenterId { get; set; }
+    public JournalEntry JournalEntry { get; set; } = null!;
+    public Account Account { get; set; } = null!;
 }
 public sealed class SalesInvoice
 {
