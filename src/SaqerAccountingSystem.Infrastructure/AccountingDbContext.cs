@@ -65,7 +65,7 @@ public sealed class AccountingDbContext(DbContextOptions<AccountingDbContext> op
         b.Entity<UserGroup>().HasOne(x => x.User).WithMany(x => x.Groups).HasForeignKey(x => x.UserId);
         b.Entity<UserGroup>().HasOne(x => x.Group).WithMany().HasForeignKey(x => x.GroupId);
         b.Entity<AuthSession>().HasOne(x => x.User).WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
-        b.Entity<JournalEntry>().HasMany(x => x.Lines).WithOne().HasForeignKey(x => x.JournalEntryId).OnDelete(DeleteBehavior.Cascade);
+        b.Entity<JournalEntry>().HasMany(x => x.Lines).WithOne(x => x.JournalEntry).HasForeignKey(x => x.JournalEntryId).OnDelete(DeleteBehavior.Cascade);
         b.Entity<SalesInvoice>().HasMany(x => x.Lines).WithOne().HasForeignKey(x => x.SalesInvoiceId).OnDelete(DeleteBehavior.Cascade);
         b.Entity<PurchaseInvoice>().HasMany(x => x.Lines).WithOne().HasForeignKey(x => x.PurchaseInvoiceId).OnDelete(DeleteBehavior.Cascade);
     }
