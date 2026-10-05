@@ -65,25 +65,7 @@ public sealed class MainForm : Form
         };
         side.Controls.Add(nav);
 
-        var home = new Button
-        {
-            Text = "لوحة التحكم الرئيسية",
-            Width = 255,
-            Height = 46,
-            Margin = new Padding(0, 3, 0, 8),
-            FlatStyle = FlatStyle.Flat,
-            BackColor = Theme.SidebarActive,
-            ForeColor = Color.White,
-            Font = new Font("Tahoma", 10F, FontStyle.Bold),
-            TextAlign = ContentAlignment.MiddleRight
-        };
-        home.FlatAppearance.BorderSize = 0;
-        home.Click += (_, _) => ShowModule("dashboard");
-        nav.Controls.Add(home);
-
-        foreach (var module in _store.Modules
-                     .Where(HasModuleAccess)
-                     .Where(x => x.Key is not "dashboard" and not "legacy-screens" and not "original-catalog"))
+        foreach (var module in _store.Modules.Where(HasModuleAccess))
         {
             var button = new Button
             {
@@ -105,41 +87,6 @@ public sealed class MainForm : Form
             nav.Controls.Add(button);
         }
 
-        if (_user.Permissions.Contains("users.manage", StringComparer.OrdinalIgnoreCase))
-        {
-            var adminHeader = new Label
-            {
-                Text = "الإدارة الفنية والصلاحيات",
-                Width = 255,
-                Height = 32,
-                Margin = new Padding(0, 8, 0, 2),
-                ForeColor = Color.FromArgb(145, 170, 180),
-                Font = new Font("Tahoma", 8.5F, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleRight
-            };
-            nav.Controls.Add(adminHeader);
-
-            foreach (var module in _store.Modules.Where(x => x.Key is "legacy-screens" or "original-catalog").Where(HasModuleAccess))
-            {
-                var button = new Button
-                {
-                    Text = module.Title,
-                    Tag = module.Key,
-                    Width = 255,
-                    Height = 38,
-                    Margin = new Padding(0, 2, 0, 2),
-                    FlatStyle = FlatStyle.Flat,
-                    BackColor = Theme.Sidebar,
-                    ForeColor = Color.FromArgb(170, 185, 190),
-                    Font = new Font("Tahoma", 8.5F, FontStyle.Bold),
-                    TextAlign = ContentAlignment.MiddleRight
-                };
-                button.FlatAppearance.BorderSize = 0;
-                button.Click += (_, _) => ShowModule((string)button.Tag);
-                nav.Controls.Add(button);
-            }
-        }
-
         var logout = new Button
         {
             Text = "تسجيل الخروج",
@@ -156,10 +103,6 @@ public sealed class MainForm : Form
 
         var main = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Background };
         Controls.Add(main);
-
-        // Add the fill content first; the header is brought to the front so
-        // DockStyle.Fill cannot cover it and the selected screen remains visible.
-        main.Controls.Add(_content);
 
         var header = new Panel
         {
@@ -179,7 +122,7 @@ public sealed class MainForm : Form
 
         header.Controls.Add(new Label
         {
-            Text = "نظام صقر للمحاسبة • مصدر البيانات: " + _store.DataSourceName + " • بيانات فعلية",
+            Text = "نظام صقر للمحاسبة • بيانات فعلية من GtsDb2026",
             AutoSize = true,
             ForeColor = Theme.Muted,
             Location = new Point(28,12)
@@ -199,8 +142,7 @@ public sealed class MainForm : Form
         _content.Dock = DockStyle.Fill;
         _content.Padding = new Padding(28);
         _content.AutoScroll = true;
-        _content.BackColor = Theme.Background;
-        header.BringToFront();
+        main.Controls.Add(_content);
     }
 
     private bool HasModuleAccess(ModuleInfo module)
@@ -240,32 +182,17 @@ public sealed class MainForm : Form
         Control view = key switch
         {
             "dashboard" => Dashboard(),
-            "companies" => _store.IsLegacyMode
-                ? GridScreen("الفروع الفعلية", _store.Branches.Select(x => new { المعرف = x.Id, x.Name, رقم_الحساب = x.AccountNo, x.Phone, x.Fax, x.Address }).ToArray())
-                : GridScreen("الشركات والفروع", _store.Companies.Select(x => new { المعرف = x.Id, x.Code, x.Name, x.TaxNumber, x.Currency, الحالة = x.IsActive ? "نشطة" : "متوقفة" }).ToArray()),
+            "companies" => GridScreen("الشركات والفروع", _store.Companies.Select(x => new { المعرف = x.Id, x.Code, x.Name, x.TaxNumber, x.Currency, الحالة = x.IsActive ? "نشطة" : "متوقفة" }).ToArray()),
             "customers" => GridScreen("العملاء والذمم", _store.Customers.Select(x => new { المعرف = x.Id, x.Code, x.Name, x.Phone, الرصيد = x.Balance }).ToArray()),
             "suppliers" => GridScreen("الموردون والدائنون", _store.Suppliers.Select(x => new { المعرف = x.Id, x.Code, x.Name, x.Phone, الرصيد = x.Balance }).ToArray()),
             "items" => GridScreen("الأصناف", _store.Items.Select(x => new { المعرف = x.Id, x.Code, x.Name, الرصيد = x.StockQuantity, السعر = x.SalePrice }).ToArray()),
             "sales" => SalesScreen(),
             "purchases" => PurchasesScreen(),
-            "sales-returns" => GridScreen("مرتجعات المبيعات - بيانات فعلية", _store.SalesReturns.Select(x => new
-            {
-                المعرف = x.Id, x.Number, x.Party, التاريخ = x.Date == DateTime.MinValue ? "" : x.Date.ToString("yyyy-MM-dd"),
-                المبلغ = x.Amount, الحالة = x.Status
-            }).ToArray()),
-            "purchase-returns" => GridScreen("مرتجعات المشتريات - بيانات فعلية", _store.PurchaseReturns.Select(x => new
-            {
-                المعرف = x.Id, x.Number, x.Party, التاريخ = x.Date == DateTime.MinValue ? "" : x.Date.ToString("yyyy-MM-dd"),
-                المبلغ = x.Amount, الحالة = x.Status
-            }).ToArray()),
             "accounts" => AccountsScreen(),
             "journals" => JournalsScreen(),
             "payments" => GridScreen("الخزينة والبنوك", _store.Payments.Select(x => new { المعرف = x.Id, x.Number, x.PartyType, x.Amount, x.Method, التاريخ = x.Date.ToString("yyyy-MM-dd") }).ToArray()),
-            "inventory" => _store.IsLegacyMode
-                ? GridScreen("أرصدة المخزون الفعلية حسب المخزن", _store.StockBalances.Select(x => new { x.ItemId, x.ItemCode, x.ItemName, المخزن = x.StoreName, الرصيد = x.CurrentBalance, عدد_الوحدات = x.UnitNumber }).ToArray())
-                : GridScreen("حركات المخزون", _store.Inventory.Select(x => new { المعرف = x.Id, x.ItemId, التاريخ = x.Date.ToString("yyyy-MM-dd"), وارد = x.QuantityIn, صادر = x.QuantityOut, x.UnitCost }).ToArray()),
+            "inventory" => GridScreen("حركات المخزون", _store.Inventory.Select(x => new { المعرف = x.Id, x.ItemId, التاريخ = x.Date.ToString("yyyy-MM-dd"), وارد = x.QuantityIn, صادر = x.QuantityOut, x.UnitCost }).ToArray()),
             "tax" => GridScreen("الضرائب", _store.Taxes.Select(x => new { المعرف = x.Id, x.Code, x.Name, النسبة = x.Rate, مبيعات = x.IsSales, مشتريات = x.IsPurchase }).ToArray()),
-            "stores" => GridScreen("المخازن الفعلية", _store.Stores.Select(x => new { المعرف = x.Id, x.Name, x.BranchId, x.Address, x.Phone }).ToArray()),
             "assets" => GridScreen("الأصول الثابتة", _store.Assets.Select(x => new { المعرف = x.Id, x.Code, x.Name, التكلفة = x.Cost, مجمع_الإهلاك = x.AccumulatedDepreciation, العمر = x.UsefulLifeMonths }).ToArray()),
             "costcenters" => GridScreen("مراكز التكلفة", _store.CostCenters.Select(x => new { المعرف = x.Id, x.Code, x.Name, الحالة = x.IsActive ? "نشط" : "متوقف" }).ToArray()),
             "budgets" => GridScreen("الموازنات", _store.Budgets.Select(x => new { المعرف = x.Id, x.AccountId, x.Year, x.Month, x.Amount }).ToArray()),
@@ -279,7 +206,6 @@ public sealed class MainForm : Form
 
         view.Dock = DockStyle.Fill;
         _content.Controls.Add(view);
-        view.BringToFront();
     }
 
     private Control Dashboard()
@@ -341,10 +267,6 @@ public sealed class MainForm : Form
         }).ToArray());
         recent.Dock = DockStyle.Fill;
         root.Controls.Add(recent);
-        // Keep the lower grid from covering the dashboard header/cards.
-        info.BringToFront();
-        cards.BringToFront();
-        hero.BringToFront();
         return root;
     }
 
@@ -701,37 +623,14 @@ public sealed class MainForm : Form
     {
         var panel = new Panel { BackColor = Theme.Background };
         var top = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 70 };
-        var output = new TextBox
-        {
-            Multiline = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Both,
-            Font = new Font("Consolas", 9F), ReadOnly = true, BackColor = Color.White
-        };
-
-        panel.Controls.Add(output);
         panel.Controls.Add(top);
-        top.BringToFront();
+
+        var output = new TextBox { Multiline = true, Dock = DockStyle.Fill, ScrollBars = ScrollBars.Both, Font = new Font("Consolas",9F), ReadOnly = true };
+        panel.Controls.Add(output);
 
         AddReportButton(top, "ميزان المراجعة", "trial-balance", output);
-        if (!_store.IsLegacyMode)
-        {
-            AddReportButton(top, "قائمة الدخل", "income-statement", output);
-            AddReportButton(top, "الميزانية العمومية", "balance-sheet", output);
-        }
-        else
-        {
-            AddReportButton(top, "ملخص النشاط", "activity-summary", output);
-            AddReportButton(top, "حركة الخزينة", "treasury", output);
-            var info = new Label
-            {
-                AutoSize = true,
-                Text = "التقارير تُقرأ مباشرة من GTS: القيود والمبيعات والمشتريات والمرتجعات والخزينة.",
-                Font = new Font("Tahoma", 9F, FontStyle.Bold),
-                ForeColor = Theme.Muted,
-                Margin = new Padding(12, 10, 0, 0)
-            };
-            top.Controls.Add(info);
-        }
-
+        AddReportButton(top, "قائمة الدخل", "income-statement", output);
+        AddReportButton(top, "الميزانية العمومية", "balance-sheet", output);
         return panel;
     }
 
@@ -803,7 +702,6 @@ public sealed class MainForm : Form
         };
         Theme.StyleGrid(grid);
         panel.Controls.Add(grid);
-        top.BringToFront();
         export.Click += (_, _) => ExportGrid(grid);
 
         search.TextChanged += (_, _) =>

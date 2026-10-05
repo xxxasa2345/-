@@ -54,9 +54,9 @@ public sealed class AppStore
         new ModuleInfo("budgets","الموازنات","budgets.view"),
         new ModuleInfo("reports","التقارير المالية","reports.view"),
         new ModuleInfo("settings","الإعدادات","settings.view"),
-        new ModuleInfo("users","إدارة المستخدمين والصلاحيات","users.manage"),
-        new ModuleInfo("legacy-screens","إدارة الشاشات الأصلية","users.manage"),
-        new ModuleInfo("original-catalog","فهرس شاشات GTS الأصلية","users.manage")
+        new ModuleInfo("users","المستخدمون والصلاحيات","users.manage"),
+        new ModuleInfo("legacy-screens","صلاحيات الشاشات الأصلية","dashboard.view"),
+        new ModuleInfo("original-catalog","فهرس شاشات GTS الأصلية","dashboard.view")
     };
 
     public List<InvoiceRow> Sales { get; } = new();
