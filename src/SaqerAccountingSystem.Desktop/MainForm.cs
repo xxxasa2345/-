@@ -518,7 +518,6 @@ public sealed class MainForm : Form
         top.Controls.Add(refresh);
 
         var export = new Button { Text = "تصدير CSV", Width = 105, Height = 30, Location = new Point(365,35) };
-        export.Click += (_, _) => ExportGrid(grid);
         top.Controls.Add(export);
 
         var count = new Label
@@ -543,6 +542,7 @@ public sealed class MainForm : Form
         };
         Theme.StyleGrid(grid);
         panel.Controls.Add(grid);
+        export.Click += (_, _) => ExportGrid(grid);
 
         search.TextChanged += (_, _) =>
         {
@@ -582,14 +582,14 @@ public sealed class MainForm : Form
     private static string Csv(string value)
         => """ + value.Replace(""", """") + """;
 
-    private static Control Settings()
+    private Control Settings()
     {
         return new Label
         {
             Text = "إعدادات الاتصال والنظام\r\n\r\n" +
                    "قاعدة البيانات القديمة: GtsDb2026\r\n" +
                    "خادم SQL Server: .\\SQLEXPRESS\r\n" +
-                   "المستخدم الحالي: " + "مدير" + "\r\n" +
+                   "المستخدم الحالي: " + _user.Username + "\r\n" +
                    "نظام الصلاحيات: User_Login → User_Groups → User_Permission → User_Screens\r\n" +
                    "الوضع: تشغيل بيانات حقيقية من قاعدة ماجد سوفت",
             AutoSize = true,
