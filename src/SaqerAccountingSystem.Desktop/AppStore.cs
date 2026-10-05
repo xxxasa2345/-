@@ -99,6 +99,10 @@ public sealed class AppStore
         }
     }
 
+    public DashboardSummary GetDashboard() => Get<DashboardSummary>("api/dashboard");
+
+    public string GetReport(string kind) => GetJson("api/reports/" + kind);
+
     public void Refresh()
     {
         if (string.IsNullOrWhiteSpace(_token)) return;
@@ -156,6 +160,15 @@ public sealed class AppStore
         return JsonSerializer.Deserialize<T>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult(), _json) ?? throw new InvalidOperationException("Empty API response.");
     }
 
+    private string GetJson(string path)
+    {
+        using var request = new HttpRequestMessage(HttpMethod.Get, path);
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+        using var response = _http.Send(request);
+        response.EnsureSuccessStatusCode();
+        return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+    }
+
     private static InvoiceRow? InvoiceFromJson(JsonElement x)
     {
         try
@@ -188,3 +201,8 @@ public sealed record TaxRow(int Id, string Code, string Name, decimal Rate, bool
 public sealed record AssetRow(int Id, string Code, string Name, DateTime AcquisitionDate, decimal Cost, decimal AccumulatedDepreciation, int UsefulLifeMonths, bool IsActive);
 public sealed record CostCenterRow(int Id, string Code, string Name, bool IsActive);
 public sealed record BudgetRow(long Id, int AccountId, int Year, int Month, decimal Amount);
+
+public sealed record DashboardSummary(List<MetricRow> Cards, List<DashboardInvoiceRow> RecentInvoices, List<DashboardActivityRow> Activity);
+public sealed record MetricRow(string Key, string Title, decimal Value, decimal Trend);
+public sealed record DashboardInvoiceRow(string Number, string Party, string Date, decimal Amount, string Status);
+public sealed record DashboardActivityRow(DateTime Time, string Text, string Type);
