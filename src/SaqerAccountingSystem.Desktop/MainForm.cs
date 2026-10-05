@@ -189,7 +189,7 @@ public sealed class MainForm : Form
             "sales" => SalesScreen(),
             "purchases" => PurchasesScreen(),
             "accounts" => AccountsScreen(),
-            "journals" => GridScreen("القيود والأستاذ العام", _store.Journals.Select(x => new { المعرف = x.Id, x.Number, التاريخ = x.Date.ToString("yyyy-MM-dd"), x.Description, x.Status }).ToArray()),
+            "journals" => JournalsScreen(),
             "payments" => GridScreen("الخزينة والبنوك", _store.Payments.Select(x => new { المعرف = x.Id, x.Number, x.PartyType, x.Amount, x.Method, التاريخ = x.Date.ToString("yyyy-MM-dd") }).ToArray()),
             "inventory" => GridScreen("حركات المخزون", _store.Inventory.Select(x => new { المعرف = x.Id, x.ItemId, التاريخ = x.Date.ToString("yyyy-MM-dd"), وارد = x.QuantityIn, صادر = x.QuantityOut, x.UnitCost }).ToArray()),
             "tax" => GridScreen("الضرائب", _store.Taxes.Select(x => new { المعرف = x.Id, x.Code, x.Name, النسبة = x.Rate, مبيعات = x.IsSales, مشتريات = x.IsPurchase }).ToArray()),
@@ -278,6 +278,21 @@ public sealed class MainForm : Form
             المبلغ = x.Amount, الحالة = x.Status
         }).ToArray());
 
+        var actions = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 48, FlowDirection = FlowDirection.LeftToRight };
+        if (_user.Permissions.Contains("sales.create", StringComparer.OrdinalIgnoreCase))
+        {
+            var create = new Button { Text = "فاتورة مبيعات جديدة", Width = 165, Height = 38 };
+            Theme.StyleButton(create, true);
+            create.Click += (_, _) =>
+            {
+                LegacyOperationForms.OpenSales(this, _store, _user);
+                ShowModule("sales");
+            };
+            actions.Controls.Add(create);
+        }
+        screen.Controls.Add(actions);
+        actions.BringToFront();
+
         var grid = screen.Controls.OfType<DataGridView>().FirstOrDefault();
         if (grid is not null)
         {
@@ -298,6 +313,21 @@ public sealed class MainForm : Form
             المبلغ = x.Amount, الحالة = x.Status
         }).ToArray());
 
+        var actions = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 48, FlowDirection = FlowDirection.LeftToRight };
+        if (_user.Permissions.Contains("purchases.create", StringComparer.OrdinalIgnoreCase))
+        {
+            var create = new Button { Text = "فاتورة مشتريات جديدة", Width = 165, Height = 38 };
+            Theme.StyleButton(create, true);
+            create.Click += (_, _) =>
+            {
+                LegacyOperationForms.OpenPurchases(this, _store, _user);
+                ShowModule("purchases");
+            };
+            actions.Controls.Add(create);
+        }
+        screen.Controls.Add(actions);
+        actions.BringToFront();
+
         var grid = screen.Controls.OfType<DataGridView>().FirstOrDefault();
         if (grid is not null)
         {
@@ -307,6 +337,30 @@ public sealed class MainForm : Form
                     ShowPurchaseDetails(id);
             };
         }
+        return screen;
+    }
+
+    private Control JournalsScreen()
+    {
+        var screen = GridScreen("القيود والأستاذ العام - بيانات فعلية", _store.Journals.Select(x => new
+        {
+            المعرف = x.Id, x.Number, التاريخ = x.Date.ToString("yyyy-MM-dd"), x.Description, x.Status
+        }).ToArray());
+
+        var actions = new FlowLayoutPanel { Dock = DockStyle.Top, Height = 48, FlowDirection = FlowDirection.LeftToRight };
+        if (_user.Permissions.Contains("journals.create", StringComparer.OrdinalIgnoreCase))
+        {
+            var create = new Button { Text = "قيد يومية جديد", Width = 145, Height = 38 };
+            Theme.StyleButton(create, true);
+            create.Click += (_, _) =>
+            {
+                LegacyOperationForms.OpenJournal(this, _store);
+                ShowModule("journals");
+            };
+            actions.Controls.Add(create);
+        }
+        screen.Controls.Add(actions);
+        actions.BringToFront();
         return screen;
     }
 
