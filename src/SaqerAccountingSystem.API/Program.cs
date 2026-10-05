@@ -731,6 +731,9 @@ static List<NavItem> Navigation(string[] permissions)
 static async Task<Account> FindAccount(AccountingDbContext db, int companyId, string code) =>
     await db.Accounts.SingleAsync(x => x.CompanyId == companyId && x.Code == code && x.IsActive);
 
+static async Task<int> FindAccountId(AccountingDbContext db, int companyId, string code) =>
+    (await FindAccount(db, companyId, code)).Id;
+
 static async Task<decimal> AccountBalance(AccountingDbContext db, int companyId, string code) =>
     await db.JournalLines.AsNoTracking()
         .Where(x => x.JournalEntry.Status == DocumentStatus.Approved && x.JournalEntry.CompanyId == companyId && x.Account.Code == code)
