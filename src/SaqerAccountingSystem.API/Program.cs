@@ -15,6 +15,7 @@ var connection = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("DefaultConnection is not configured.");
 builder.Services.AddDbContext<AccountingDbContext>(o => o.UseSqlServer(connection));
 builder.Services.AddSingleton<MajedSoftLegacyStore>();
+builder.Services.AddSingleton<LegacySessionStore>();
 
 var app = builder.Build();
 
@@ -48,6 +49,16 @@ app.Use(async (context, next) =>
     }
 
     var token = header.ToString()["Bearer ".Length..].Trim();
+
+    var legacySessions = context.RequestServices.GetRequiredService<LegacySessionStore>();
+    if (legacySessions.TryGet(token, out var legacySession))
+    {
+        context.Items["legacySession"] = legacySession;
+        context.Items["permissions"] = legacySession.Permissions.ToArray();
+        await next();
+        return;
+    }
+
     var db = context.RequestServices.GetRequiredService<AccountingDbContext>();
     var session = await db.AuthSessions.AsNoTracking()
         .SingleOrDefaultAsync(x => x.TokenHash == PasswordHasher.HashToken(token) && x.ExpiresAt > DateTime.UtcNow);
