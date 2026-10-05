@@ -32,38 +32,67 @@ public sealed class MainForm : Form
 
     private void Build()
     {
-        var side = new Panel { Dock = DockStyle.Right, Width = 285, BackColor = Theme.Sidebar, Padding = new Padding(14) };
-        Controls.Add(side);
+        // شريط علوي رئيسي مع الحفاظ على جميع وظائف النظام الحالية.
+        var topBar = new Panel
+        {
+            Dock = DockStyle.Top,
+            Height = 76,
+            BackColor = Theme.Sidebar,
+            Padding = new Padding(10, 8, 10, 8)
+        };
+        Controls.Add(topBar);
 
-        side.Controls.Add(new Label
+        var brand = new Panel
+        {
+            Dock = DockStyle.Right,
+            Width = 190,
+            BackColor = Theme.Sidebar
+        };
+        brand.Controls.Add(new Label
         {
             Text = "صقر ERP",
             Dock = DockStyle.Top,
-            Height = 58,
+            Height = 32,
             ForeColor = Color.White,
-            Font = new Font("Tahoma", 20F, FontStyle.Bold),
+            Font = new Font("Tahoma", 17F, FontStyle.Bold),
             TextAlign = ContentAlignment.MiddleCenter
         });
-
-        side.Controls.Add(new Label
+        brand.Controls.Add(new Label
         {
-            Text = _user.FullName + Environment.NewLine + _user.Group,
-            Dock = DockStyle.Top,
-            Height = 72,
+            Text = _user.FullName + " • " + _user.Group,
+            Dock = DockStyle.Fill,
             ForeColor = Color.FromArgb(198,214,219),
-            Font = new Font("Tahoma", 9F, FontStyle.Bold),
+            Font = new Font("Tahoma", 8F, FontStyle.Bold),
             TextAlign = ContentAlignment.MiddleCenter
         });
+        topBar.Controls.Add(brand);
+
+        var logout = new Button
+        {
+            Text = "تسجيل الخروج",
+            Dock = DockStyle.Left,
+            Width = 125,
+            Height = 54,
+            FlatStyle = FlatStyle.Flat,
+            BackColor = Color.FromArgb(31,57,67),
+            ForeColor = Color.White,
+            Font = new Font("Tahoma", 8.5F, FontStyle.Bold)
+        };
+        logout.FlatAppearance.BorderSize = 0;
+        logout.Click += (_, _) => Close();
+        topBar.Controls.Add(logout);
 
         var nav = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill,
-            FlowDirection = FlowDirection.TopDown,
+            FlowDirection = FlowDirection.RightToLeft,
             WrapContents = false,
             AutoScroll = true,
-            BackColor = Theme.Sidebar
+            BackColor = Theme.Sidebar,
+            Padding = new Padding(4, 5, 4, 5),
+            Margin = Padding.Empty
         };
-        side.Controls.Add(nav);
+        topBar.Controls.Add(nav);
 
         foreach (var module in _store.Modules.Where(HasModuleAccess))
         {
@@ -71,14 +100,15 @@ public sealed class MainForm : Form
             {
                 Text = module.Title,
                 Tag = module.Key,
-                Width = 255,
-                Height = 43,
-                Margin = new Padding(0,3,0,3),
+                AutoSize = false,
+                Width = Math.Max(105, Math.Min(175, TextRenderer.MeasureText(module.Title, new Font("Tahoma", 9F, FontStyle.Bold)).Width + 32)),
+                Height = 48,
+                Margin = new Padding(3, 0, 3, 0),
                 FlatStyle = FlatStyle.Flat,
                 BackColor = Theme.Sidebar,
                 ForeColor = Color.FromArgb(215,225,229),
-                Font = new Font("Tahoma", 9.5F, FontStyle.Bold),
-                TextAlign = ContentAlignment.MiddleRight
+                Font = new Font("Tahoma", 9F, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleCenter
             };
             button.FlatAppearance.BorderSize = 0;
             button.Click += (_, _) => ShowModule((string)button.Tag);
@@ -86,20 +116,6 @@ public sealed class MainForm : Form
             button.MouseLeave += (_, _) => button.BackColor = Theme.Sidebar;
             nav.Controls.Add(button);
         }
-
-        var logout = new Button
-        {
-            Text = "تسجيل الخروج",
-            Dock = DockStyle.Bottom,
-            Height = 48,
-            FlatStyle = FlatStyle.Flat,
-            BackColor = Color.FromArgb(31,57,67),
-            ForeColor = Color.White,
-            Font = new Font("Tahoma", 9F, FontStyle.Bold)
-        };
-        logout.FlatAppearance.BorderSize = 0;
-        logout.Click += (_, _) => Close();
-        side.Controls.Add(logout);
 
         var main = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Background };
         Controls.Add(main);
@@ -144,7 +160,6 @@ public sealed class MainForm : Form
         _content.AutoScroll = true;
         main.Controls.Add(_content);
     }
-
     private bool HasModuleAccess(ModuleInfo module)
         => module.Key is "dashboard" or "legacy-screens"
             ? _user.Permissions.Count > 0
