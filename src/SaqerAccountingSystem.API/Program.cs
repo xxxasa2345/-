@@ -14,6 +14,7 @@ builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.ReferenceHand
 var connection = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("DefaultConnection is not configured.");
 builder.Services.AddDbContext<AccountingDbContext>(o => o.UseSqlServer(connection));
+builder.Services.AddSingleton<MajedSoftLegacyStore>();
 
 var app = builder.Build();
 
@@ -695,6 +696,8 @@ app.MapPost("/api/admin/users", async (UserCreateRequest input, AccountingDbCont
 app.MapGet("/api/audit", async (int? limit, AccountingDbContext db) =>
     Results.Ok(await db.AuditLogs.AsNoTracking().OrderByDescending(x => x.Id).Take(Math.Clamp(limit ?? 200, 1, 1000)).ToListAsync()))
     .RequirePermission("audit.view");
+
+app.MapLegacyEndpoints();
 
 app.MapFallbackToFile("index.html");
 app.Run();
