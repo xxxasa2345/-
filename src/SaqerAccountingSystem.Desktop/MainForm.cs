@@ -187,7 +187,9 @@ public sealed class MainForm : Form
         Control view = key switch
         {
             "dashboard" => Dashboard(),
-            "companies" => GridScreen("الشركات والفروع", _store.Companies.Select(x => new { المعرف = x.Id, x.Code, x.Name, x.TaxNumber, x.Currency, الحالة = x.IsActive ? "نشطة" : "متوقفة" }).ToArray()),
+            "companies" => _store.IsLegacyMode
+                ? GridScreen("الفروع الفعلية", _store.Branches.Select(x => new { المعرف = x.Id, x.Name, رقم_الحساب = x.AccountNo, x.Phone, x.Fax, x.Address }).ToArray())
+                : GridScreen("الشركات والفروع", _store.Companies.Select(x => new { المعرف = x.Id, x.Code, x.Name, x.TaxNumber, x.Currency, الحالة = x.IsActive ? "نشطة" : "متوقفة" }).ToArray()),
             "customers" => GridScreen("العملاء والذمم", _store.Customers.Select(x => new { المعرف = x.Id, x.Code, x.Name, x.Phone, الرصيد = x.Balance }).ToArray()),
             "suppliers" => GridScreen("الموردون والدائنون", _store.Suppliers.Select(x => new { المعرف = x.Id, x.Code, x.Name, x.Phone, الرصيد = x.Balance }).ToArray()),
             "items" => GridScreen("الأصناف", _store.Items.Select(x => new { المعرف = x.Id, x.Code, x.Name, الرصيد = x.StockQuantity, السعر = x.SalePrice }).ToArray()),
@@ -664,10 +666,12 @@ public sealed class MainForm : Form
         }
         else
         {
+            AddReportButton(top, "ملخص النشاط", "activity-summary", output);
+            AddReportButton(top, "حركة الخزينة", "treasury", output);
             var info = new Label
             {
                 AutoSize = true,
-                Text = "التقرير يُقرأ مباشرة من قيود GTS الفعلية.",
+                Text = "التقارير تُقرأ مباشرة من GTS: القيود والمبيعات والمشتريات والمرتجعات والخزينة.",
                 Font = new Font("Tahoma", 9F, FontStyle.Bold),
                 ForeColor = Theme.Muted,
                 Margin = new Padding(12, 10, 0, 0)
