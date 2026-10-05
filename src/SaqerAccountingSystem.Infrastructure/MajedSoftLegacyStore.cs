@@ -299,7 +299,7 @@ public sealed class MajedSoftLegacyStore
                 s.ScreenTypeID,
                 s.ScreenNum,
                 s.ScreenTypeName,
-                s.ISShow,
+                ISNULL(s.ISShow, 1) AS ISShow,
                 p.Allow_Branch,
                 p.Allow_Enter,
                 p.Allow_Save,
