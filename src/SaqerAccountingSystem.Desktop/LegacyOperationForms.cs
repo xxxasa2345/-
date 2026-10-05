@@ -313,7 +313,7 @@ internal sealed class LegacyInvoiceForm : Form
         for (var i = 0; i < combo.Items.Count; i++)
         {
             var item = combo.Items[i];
-            var name = item is AccountRow a ? $"{a.Code} {a.Name}" : item.ToString() ?? "";
+            var name = item is AccountRow a ? $"{a.Code} {a.Name}" : item?.ToString() ?? "";
             if (terms.Any(t => name.Contains(t, StringComparison.OrdinalIgnoreCase)))
             {
                 combo.SelectedIndex = i;
