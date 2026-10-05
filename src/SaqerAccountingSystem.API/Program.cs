@@ -409,6 +409,7 @@ app.MapPost("/api/purchases/{id:long}/post", async (long id, InvoicePostRequest 
         });
     }
 
+    invoice.IsPaid = request.IsPaid;
     var journalLines = new List<JournalLine>
     {
         new JournalLine { AccountId = inventory.Id, Debit = invoice.SubTotal, Credit = 0, Description = invoice.Number },
@@ -424,7 +425,6 @@ app.MapPost("/api/purchases/{id:long}/post", async (long id, InvoicePostRequest 
         Description = "ترحيل فاتورة مشتريات " + invoice.Number, ReferenceType = "PurchaseInvoice", ReferenceId = invoice.Id,
         Status = DocumentStatus.Approved, PostedAt = DateTime.UtcNow, PostedByUserId = GetUser(ctx).Id, Lines = journalLines
     };
-    invoice.IsPaid = request.IsPaid;
     invoice.Status = request.IsPaid ? DocumentStatus.Paid : DocumentStatus.Approved;
     db.JournalEntries.Add(entry);
     await db.SaveChangesAsync();
