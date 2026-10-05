@@ -400,6 +400,15 @@ public sealed class AppStore
     public List<LegacyAccountLedgerRow> GetLegacyAccountLedger(int id)
         => Get<List<LegacyAccountLedgerRow>>("api/legacy/accounts/" + id + "/ledger");
 
+    public LegacyWriteResultRow CreateLegacySale(LegacySaleWriteClientRequest request)
+        => Post<LegacyWriteResultRow>("api/legacy/sales", request);
+
+    public LegacyWriteResultRow CreateLegacyPurchase(LegacyPurchaseWriteClientRequest request)
+        => Post<LegacyWriteResultRow>("api/legacy/purchases", request);
+
+    public LegacyWriteResultRow CreateLegacyJournal(LegacyJournalWriteClientRequest request)
+        => Post<LegacyWriteResultRow>("api/legacy/journals", request);
+
     private readonly List<LegacyScreenAccess> LegacyScreens = new();
 
     public bool HasPermission(string permission)
@@ -442,6 +451,31 @@ public sealed class AppStore
         using var response = _http.Send(request);
         response.EnsureSuccessStatusCode();
         return JsonSerializer.Deserialize<T>(response.Content.ReadAsStringAsync().GetAwaiter().GetResult(), _json) ?? throw new InvalidOperationException("Empty API response.");
+    }
+
+    private T Post<T>(string path, object body)
+    {
+        var payload = JsonSerializer.Serialize(body, _json);
+        using var request = new HttpRequestMessage(HttpMethod.Post, path)
+        {
+            Content = new StringContent(payload, Encoding.UTF8, "application/json")
+        };
+        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+        using var response = _http.Send(request);
+        var text = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+        if (!response.IsSuccessStatusCode)
+        {
+            try
+            {
+                using var error = JsonDocument.Parse(text);
+                if (error.RootElement.TryGetProperty("message", out var message))
+                    throw new InvalidOperationException(message.GetString() ?? "فشل تنفيذ العملية.");
+            }
+            catch (JsonException) { }
+            response.EnsureSuccessStatusCode();
+        }
+        return JsonSerializer.Deserialize<T>(text, _json)
+            ?? throw new InvalidOperationException("Empty API response.");
     }
 
     private string GetJson(string path)
