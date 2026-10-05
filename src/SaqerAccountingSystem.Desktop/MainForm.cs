@@ -104,6 +104,10 @@ public sealed class MainForm : Form
         var main = new Panel { Dock = DockStyle.Fill, BackColor = Theme.Background };
         Controls.Add(main);
 
+        // Add the fill content first; the header is brought to the front so
+        // DockStyle.Fill cannot cover it and the selected screen remains visible.
+        main.Controls.Add(_content);
+
         var header = new Panel
         {
             Dock = DockStyle.Top,
@@ -122,7 +126,7 @@ public sealed class MainForm : Form
 
         header.Controls.Add(new Label
         {
-            Text = "نظام صقر للمحاسبة • بيانات فعلية من GtsDb2026",
+            Text = "نظام صقر للمحاسبة • مصدر البيانات: " + _store.DataSourceName + " • بيانات فعلية",
             AutoSize = true,
             ForeColor = Theme.Muted,
             Location = new Point(28,12)
@@ -142,7 +146,8 @@ public sealed class MainForm : Form
         _content.Dock = DockStyle.Fill;
         _content.Padding = new Padding(28);
         _content.AutoScroll = true;
-        main.Controls.Add(_content);
+        _content.BackColor = Theme.Background;
+        header.BringToFront();
     }
 
     private bool HasModuleAccess(ModuleInfo module)
@@ -206,6 +211,7 @@ public sealed class MainForm : Form
 
         view.Dock = DockStyle.Fill;
         _content.Controls.Add(view);
+        view.BringToFront();
     }
 
     private Control Dashboard()
@@ -267,6 +273,10 @@ public sealed class MainForm : Form
         }).ToArray());
         recent.Dock = DockStyle.Fill;
         root.Controls.Add(recent);
+        // Keep the lower grid from covering the dashboard header/cards.
+        info.BringToFront();
+        cards.BringToFront();
+        hero.BringToFront();
         return root;
     }
 
@@ -702,6 +712,7 @@ public sealed class MainForm : Form
         };
         Theme.StyleGrid(grid);
         panel.Controls.Add(grid);
+        top.BringToFront();
         export.Click += (_, _) => ExportGrid(grid);
 
         search.TextChanged += (_, _) =>
