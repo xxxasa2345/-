@@ -127,6 +127,7 @@ public static class LegacyEndpointExtensions
             return Results.Ok(new { status = "ok", database = "GtsDb2026", overview });
         });
 
+        endpoints.MapLegacyWriteEndpoints();
         return group;
     }
 
