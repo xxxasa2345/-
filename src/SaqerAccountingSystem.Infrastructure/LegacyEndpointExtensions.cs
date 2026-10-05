@@ -105,6 +105,18 @@ public static class LegacyEndpointExtensions
             Results.Ok(await store.GetJournalsAsync(ct)))
             .RequireLegacyPermission("journals.view");
 
+        group.MapGet("/sales/{id:int}/details", async (int id, MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetSaleDetailsAsync(id, ct)))
+            .RequireLegacyPermission("sales.view");
+
+        group.MapGet("/purchases/{id:int}/details", async (int id, MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetPurchaseDetailsAsync(id, ct)))
+            .RequireLegacyPermission("purchases.view");
+
+        group.MapGet("/accounts/{id:int}/ledger", async (int id, MajedSoftLegacyStore store, CancellationToken ct) =>
+            Results.Ok(await store.GetAccountLedgerAsync(id, ct)))
+            .RequireLegacyPermission("accounts.view");
+
         group.MapGet("/security", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetSecurityAsync(ct)))
             .RequireLegacyPermission("users.manage");
