@@ -354,11 +354,21 @@ public sealed class AppStore
     }
 
     public bool HasPermission(string permission)
-        => _legacyMode
-            ? true && CurrentPermissions.Contains(permission, StringComparer.OrdinalIgnoreCase)
-            : CurrentPermissions.Contains(permission, StringComparer.OrdinalIgnoreCase);
+        => CurrentPermissions.Contains(permission, StringComparer.OrdinalIgnoreCase);
 
     private HashSet<string> CurrentPermissions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    private T? TryGet<T>(string path)
+    {
+        try
+        {
+            return Get<T>(path);
+        }
+        catch
+        {
+            return default;
+        }
+    }
 
     private static LegacyScreenAccess ParseLegacyScreen(JsonElement x)
         => new(
