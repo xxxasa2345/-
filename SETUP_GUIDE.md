@@ -1,279 +1,192 @@
-# Saqer Accounting System - دليل التثبيت والبدء
+# دليل تشغيل نظام صقر للمحاسبة
 
-## 📋 المتطلبات
-- .NET 8 SDK أو أحدث
+## 1. المستودع الصحيح
+
+المستودع المعتمد هو:
+
+```
+https://github.com/xxxasa2345/-.git
+```
+
+لا تستخدم مستودع `AlSaqarAccountingV4` لهذا الإصدار.
+
+## 2. المتطلبات
+
+- Windows 10/11
+- .NET 8 SDK
 - SQL Server LocalDB أو SQL Server Express
 - Visual Studio 2022 أو VS Code
 
-## 🚀 خطوات الاستخدام
+تحقق من .NET:
 
-### 1️⃣ استنساخ المستودع
-```bash
-git clone https://github.com/a4032255565-stack/a.git
-cd a
-git checkout develop
+```powershell
+dotnet --version
 ```
 
-### 2️⃣ استعادة حزم NuGet
-```bash
-dotnet restore
+تحقق من LocalDB:
+
+```powershell
+sqllocaldb info
 ```
 
-### 3️⃣ إنشاء قاعدة البيانات
-```bash
-dotnet ef database update --project src/SaqerAccountingSystem.Infrastructure --startup-project src/SaqerAccountingSystem.API
+## 3. تنزيل المشروع
+
+```powershell
+git clone https://github.com/xxxasa2345/-.git
+cd -
 ```
 
-### 4️⃣ تشغيل التطبيق
-```bash
-cd src/SaqerAccountingSystem.API
-dotnet run
+## 4. بناء المشروع
+
+```powershell
+dotnet restore SaqerAccountingSystem.sln
+dotnet build SaqerAccountingSystem.sln --configuration Release
 ```
 
-### 5️⃣ فتح Swagger
-افتح المتصفح وانتقل إلى:
-```
-https://localhost:5001/swagger/index.html
+## 5. تشغيل النظام
+
+شغل الـAPI أولاً:
+
+```powershell
+dotnet run --project src/SaqerAccountingSystem.API
 ```
 
-## 📡 API Endpoints المتاحة
+العنوان الافتراضي:
 
-### الشركات
 ```
-GET    /api/companies           - عرض جميع الشركات
-GET    /api/companies/{id}      - عرض شركة محددة
-POST   /api/companies           - إضافة شركة جديدة
+http://localhost:5000
 ```
 
-### العملاء
+Swagger:
+
 ```
-GET    /api/customers           - عرض العملاء
-GET    /api/customers/{id}      - عرض عميل محدد
-POST   /api/customers           - إضافة عميل جديد
+http://localhost:5000/swagger
 ```
 
-### الموردين
-```
-GET    /api/suppliers           - عرض الموردين
-GET    /api/suppliers/{id}      - عرض مورد محدد
-POST   /api/suppliers           - إضافة مورد جديد
+ثم في نافذة PowerShell ثانية شغل التطبيق:
+
+```powershell
+dotnet run --project src/SaqerAccountingSystem.Desktop
 ```
 
-### الأصناف
+## 6. إعداد الاتصال
+
+API:
+
 ```
-GET    /api/items               - عرض الأصناف
-GET    /api/items/{id}          - عرض صنف محدد
-POST   /api/items               - إضافة صنف جديد
+src/SaqerAccountingSystem.API/appsettings.json
 ```
 
-### الفروع
+سطح المكتب:
+
 ```
-GET    /api/branches            - عرض الفروع
-GET    /api/branches/{id}       - عرض فرع محدد
-POST   /api/branches            - إضافة فرع جدي��
+src/SaqerAccountingSystem.Desktop/appsettings.json
 ```
 
-### المبيعات
-```
-GET    /api/sales               - عرض فواتير المبيعات
-GET    /api/sales/{id}          - عرض فاتورة محددة
-POST   /api/sales               - إنشاء فاتورة مبيعات
+يمكن تغيير عنوان API بدون تعديل الكود:
+
+```powershell
+$env:SAQER_API_URL="http://localhost:5000"
 ```
 
-### المشتريات
+## 7. قاعدة البيانات
+
+النظام يستخدم:
+
 ```
-GET    /api/purchases           - عرض فواتير المشتريات
-GET    /api/purchases/{id}      - عرض فاتورة محددة
-POST   /api/purchases           - إنشاء فاتورة مشتريات
+Server=(localdb)\\MSSQLLocalDB;Database=SaqerAccountingSystem;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=True
 ```
 
-### المخزون
+عند أول تشغيل يقوم النظام بإنشاء قاعدة البيانات والجداول والبيانات الأساسية.
+
+## 8. الدخول الأول
+
 ```
-GET    /api/inventory           - عرض حركات المخزون
-GET    /api/inventory/item/{id} - حركات صنف محدد
-GET    /api/inventory/stock/{itemId}/{branchId} - كمية المخزون
-POST   /api/inventory           - إضافة حركة مخزون
+admin / admin123
+accountant / 123456
 ```
 
-### الحسابات
+بعد الدخول غيّر كلمات المرور وأنشئ المستخدمين الفعليين من إدارة النظام.
+
+## 9. تسلسل التشغيل المحاسبي
+
 ```
-GET    /api/accounts            - عرض الحسابات
-GET    /api/accounts/{id}       - عرض حساب محدد
-POST   /api/accounts            - إضافة حساب جديد
+تسجيل الدخول
+  ↓
+المجموعة
+  ↓
+الصلاحيات
+  ↓
+الشاشة
+  ↓
+العملية
+  ↓
+المستند
+  ↓
+الترحيل
+  ↓
+القيد
+  ↓
+الأستاذ العام
+  ↓
+التقارير
 ```
 
-### دفتر المعاملات
+## 10. أهم العمليات
+
+### قيد يومية
 ```
-GET    /api/transactionjournals          - عرض المعاملات
-GET    /api/transactionjournals/{id}    - عرض معاملة محددة
-POST   /api/transactionjournals         - إنشاء معاملة
-PUT    /api/transactionjournals/{id}/approve - الموافقة على معاملة
+POST /api/journals
+POST /api/journals/{id}/post
 ```
 
-### أرصدة الحسابات
-```
-GET    /api/accountbalances/{accountId}  - رصيد حساب محدد
-```
+يشترط توازن المدين والدائن.
 
-### التقارير المالية
+### فاتورة مبيعات
 ```
-GET    /api/financialreports             - عرض التقارير
-POST   /api/financialreports/income-statement  - تقرير الدخل
-POST   /api/financialreports/balance-sheet    - الميزانية العمومية
-```
-
-### لوحة التحكم
-```
-GET    /api/reports/dashboard   - ملخص النظام
-```
-
-## 📝 أمثلة على الاستخدام
-
-### إضافة شركة
-```json
-POST /api/companies
-{
-  "name": "شركة صقر للمحاسبة",
-  "displayName": "Saqer Accounting Co.",
-  "phone": "+966501234567",
-  "email": "info@saqer.sa",
-  "taxNumber": "3103001234567890",
-  "address": "الرياض، المملكة العربية السعودية",
-  "currency": "SAR"
-}
-```
-
-### إضافة عميل
-```json
-POST /api/customers
-{
-  "name": "العميل الأول",
-  "phone": "+966501234567",
-  "email": "customer@example.com",
-  "taxNumber": "3103001234567890",
-  "address": "الرياض",
-  "isActive": true
-}
-```
-
-### إضافة صنف
-```json
-POST /api/items
-{
-  "code": "ITEM001",
-  "name": "المنتج الأول",
-  "description": "وصف المنتج",
-  "purchasePrice": 100,
-  "salePrice": 150,
-  "stockQuantity": 50,
-  "companyId": 1
-}
-```
-
-### إنشاء فاتورة مبيعات
-```json
 POST /api/sales
-{
-  "invoiceNumber": "SL-0001",
-  "invoiceDate": "2026-10-04",
-  "customerId": 1,
-  "discount": 0,
-  "taxAmount": 0,
-  "totalAmount": 150,
-  "netAmount": 150,
-  "isPaid": false,
-  "status": "Draft",
-  "lines": [
-    {
-      "itemId": 1,
-      "quantity": 1,
-      "unitPrice": 150,
-      "total": 150,
-      "description": "المنتج الأول"
-    }
-  ]
-}
+POST /api/sales/{id}/post
 ```
 
-## 🏗️ بنية المشروع
+الترحيل يحدث المخزون ويولّد القيد المحاسبي.
 
+### فاتورة مشتريات
 ```
-SaqerAccountingSystem/
-├── src/
-│   ├── SaqerAccountingSystem.Domain/
-│   │   └── Entities/              # كيانات الأعمال
-│   │
-│   ├── SaqerAccountingSystem.Application/
-│   │   ├── Interfaces/            # واجهات الخدمات
-│   │   └── Services/              # تنفيذ الخدمات
-│   │
-│   ├── SaqerAccountingSystem.Infrastructure/
-│   │   └── Data/                  # DbContext وقاعدة البيانات
-│   │
-│   └── SaqerAccountingSystem.API/
-│       ├── Controllers/           # API Controllers
-│       ├── Program.cs             # نقطة البداية
-│       └── appsettings.json       # إعدادات الاتصال
-│
-└── SETUP_GUIDE.md                 # هذا الملف
+POST /api/purchases
+POST /api/purchases/{id}/post
 ```
 
-## 🔑 الميزات الرئيسية
+الترحيل يزيد المخزون ويولّد القيد.
 
-✅ **إدارة الشركات والفروع**
-✅ **إدارة العملاء والموردين**
-✅ **إدارة الأصناف والمخزون**
-✅ **فواتير المبيعات والمشتريات**
-✅ **دفتر المعاملات المحاسبية**
-✅ **حساب الأرصدة تلقائيًا**
-✅ **التقارير المالية**
-✅ **لوحة تحكم ملخصة**
-✅ **API كاملة عبر Swagger**
-✅ **قاعدة بيانات SQL Server**
+### دفعة
+```
+POST /api/payments
+```
 
-## 📊 الكيانات الأساسية
+تنتج قيدًا محاسبيًا على الصندوق/البنك مقابل حساب العميل أو المورد.
 
-1. **Company** - الشركات
-2. **Branch** - الفروع
-3. **Customer** - العملاء
-4. **Supplier** - الموردين
-5. **Item** - الأصناف
-6. **Account** - الحسابات
-7. **SaleInvoice** - فواتير المبيعات
-8. **PurchaseInvoice** - فواتير المشتريات
-9. **TransactionJournal** - دفتر المعاملات
-10. **InventoryMovement** - حركات المخزون
-11. **Payment** - الدفعات
-12. **FinancialReport** - التقارير المالية
+## 11. التقارير
 
-## ⚠️ ملاحظات مهمة
+```
+GET /api/reports/trial-balance
+GET /api/reports/income-statement
+GET /api/reports/balance-sheet
+```
 
-- جميع المعاملات المحاسبية يجب أن تكون متوازنة (Debit = Credit)
-- الفواتير التي تمت الموافقة عليها لا يمكن تعديلها
-- المخزون يتم تحديثه تلقائيًا عند إنشاء فواتير
-- التقارير المالية توليدية وتعتمد على البيانات الحالية
+التقارير تعتمد على القيود المرحّلة في قاعدة البيانات.
 
-## 🔄 التطوير المستقبلي
+## 12. تشغيل تطبيق سطح المكتب من الحل
 
-- [ ] واجهة مستخدم ويب (Blazor)
-- [ ] نظام مصادقة متقدم
-- [ ] نظام الصلاحيات والأدوار
-- [ ] تصدير التقارير PDF/Excel
-- [ ] التكامل مع البنوك
-- [ ] نظام الإشعارات
-- [ ] التحليلات المتقدمة
+```powershell
+dotnet run --project src/SaqerAccountingSystem.Desktop
+```
 
-## 📞 الدعم والمساهمة
+تطبيق سطح المكتب يقرأ البيانات من نفس API، لذلك لا توجد قاعدة بيانات ثانية مخفية داخل التطبيق.
 
-مرحبًا بالمساهمات! يرجى:
-1. فتح issue لأي اقتراح أو مشكلة
-2. إنشاء pull request للمساهمات
-3. اتبع معايير الكود الموجودة
+## 13. النسخ الاحتياطي
 
-## 📄 الترخيص
+في الإنتاج استخدم SQL Server Backup الفعلي. لا تعتمد على ملفات المشروع أو ملفات `.db` كنسخة احتياطية.
 
-MIT License - انظر LICENSE.md للتفاصيل
+## 14. ملاحظات قبل الإنتاج
 
----
-
-✨ **شكرًا لاستخدام نظام صقر للمحاسبة!**
+يجب تخصيص شجرة الحسابات، الضرائب، الفترات المالية، سياسات الإهلاك، صلاحيات المستخدمين، ومتطلبات الفوترة الإلكترونية حسب طبيعة المنشأة قبل استخدام النظام على بيانات مالية فعلية.
