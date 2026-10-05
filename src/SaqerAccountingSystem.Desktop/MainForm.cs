@@ -65,7 +65,25 @@ public sealed class MainForm : Form
         };
         side.Controls.Add(nav);
 
-        foreach (var module in _store.Modules.Where(HasModuleAccess))
+        var home = new Button
+        {
+            Text = "لوحة التحكم الرئيسية",
+            Width = 255,
+            Height = 46,
+            Margin = new Padding(0, 3, 0, 8),
+            FlatStyle = FlatStyle.Flat,
+            BackColor = Theme.SidebarActive,
+            ForeColor = Color.White,
+            Font = new Font("Tahoma", 10F, FontStyle.Bold),
+            TextAlign = ContentAlignment.MiddleRight
+        };
+        home.FlatAppearance.BorderSize = 0;
+        home.Click += (_, _) => ShowModule("dashboard");
+        nav.Controls.Add(home);
+
+        foreach (var module in _store.Modules
+                     .Where(HasModuleAccess)
+                     .Where(x => x.Key is not "dashboard" and not "legacy-screens" and not "original-catalog"))
         {
             var button = new Button
             {
@@ -85,6 +103,41 @@ public sealed class MainForm : Form
             button.MouseEnter += (_, _) => button.BackColor = Theme.SidebarActive;
             button.MouseLeave += (_, _) => button.BackColor = Theme.Sidebar;
             nav.Controls.Add(button);
+        }
+
+        if (_user.Permissions.Contains("users.manage", StringComparer.OrdinalIgnoreCase))
+        {
+            var adminHeader = new Label
+            {
+                Text = "الإدارة الفنية والصلاحيات",
+                Width = 255,
+                Height = 32,
+                Margin = new Padding(0, 8, 0, 2),
+                ForeColor = Color.FromArgb(145, 170, 180),
+                Font = new Font("Tahoma", 8.5F, FontStyle.Bold),
+                TextAlign = ContentAlignment.MiddleRight
+            };
+            nav.Controls.Add(adminHeader);
+
+            foreach (var module in _store.Modules.Where(x => x.Key is "legacy-screens" or "original-catalog").Where(HasModuleAccess))
+            {
+                var button = new Button
+                {
+                    Text = module.Title,
+                    Tag = module.Key,
+                    Width = 255,
+                    Height = 38,
+                    Margin = new Padding(0, 2, 0, 2),
+                    FlatStyle = FlatStyle.Flat,
+                    BackColor = Theme.Sidebar,
+                    ForeColor = Color.FromArgb(170, 185, 190),
+                    Font = new Font("Tahoma", 8.5F, FontStyle.Bold),
+                    TextAlign = ContentAlignment.MiddleRight
+                };
+                button.FlatAppearance.BorderSize = 0;
+                button.Click += (_, _) => ShowModule((string)button.Tag);
+                nav.Controls.Add(button);
+            }
         }
 
         var logout = new Button
