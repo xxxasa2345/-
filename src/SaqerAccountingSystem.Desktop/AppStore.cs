@@ -10,7 +10,8 @@ public sealed record UserProfile(
     string FullName,
     string Group,
     string Password,
-    HashSet<string> Permissions);
+    HashSet<string> Permissions,
+    IReadOnlyList<LegacyScreenAccess> LegacyScreens);
 
 public sealed record ModuleInfo(string Key, string Title, string Permission);
 
@@ -19,6 +20,7 @@ public sealed class AppStore
     private readonly HttpClient _http;
     private readonly JsonSerializerOptions _json = new(JsonSerializerDefaults.Web);
     private string _token = "";
+    private bool _legacyMode;
 
     public AppStore()
     {
@@ -80,6 +82,64 @@ public sealed class AppStore
 
     public UserProfile? Authenticate(string username, string password)
     {
+        var legacy = TryAuthenticateLegacy(username, password);
+        if (legacy is not null)
+            return legacy;
+
+        return TryAuthenticateNative(username, password);
+    }
+
+    private UserProfile? TryAuthenticateLegacy(string username, string password)
+    {
+        try
+        {
+            var payload = JsonSerializer.Serialize(new { username, password }, _json);
+            using var request = new HttpRequestMessage(HttpMethod.Post, "api/legacy/auth/login")
+            {
+                Content = new StringContent(payload, Encoding.UTF8, "application/json")
+            };
+            using var response = _http.Send(request);
+            if (!response.IsSuccessStatusCode) return null;
+
+            using var document = JsonDocument.Parse(response.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+            var root = document.RootElement;
+            _token = root.GetProperty("token").GetString() ?? "";
+            if (string.IsNullOrWhiteSpace(_token)) return null;
+
+            var user = root.GetProperty("user");
+            var group = root.GetProperty("group");
+            var permissions = root.GetProperty("permissions").EnumerateArray()
+                .Select(x => x.GetString() ?? "")
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            var screens = root.TryGetProperty("screens", out var screenNode)
+                ? screenNode.EnumerateArray().Select(ParseLegacyScreen).ToList()
+                : new List<LegacyScreenAccess>();
+
+            _legacyMode = true;
+            CurrentPermissions = permissions;
+            Refresh();
+
+            return new UserProfile(
+                user.GetProperty("id").GetInt32(),
+                user.GetProperty("username").GetString() ?? username,
+                user.GetProperty("fullName").GetString() ?? username,
+                group.GetProperty("name").GetString() ?? "",
+                "",
+                permissions,
+                screens);
+        }
+        catch
+        {
+            _token = "";
+            _legacyMode = false;
+            return null;
+        }
+    }
+
+    private UserProfile? TryAuthenticateNative(string username, string password)
+    {
         try
         {
             var payload = JsonSerializer.Serialize(new { username, password }, _json);
@@ -98,30 +158,82 @@ public sealed class AppStore
                 ? gs[0].GetProperty("name").GetString() ?? ""
                 : "";
             var permissions = root.GetProperty("permissions").EnumerateArray()
-                .Select(x => x.GetString() ?? "").ToHashSet(StringComparer.OrdinalIgnoreCase);
+                .Select(x => x.GetString() ?? "")
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
+            _legacyMode = false;
+            CurrentPermissions = permissions;
             Refresh();
 
             return new UserProfile(
                 user.GetProperty("id").GetInt32(),
                 user.GetProperty("username").GetString() ?? username,
                 user.GetProperty("fullName").GetString() ?? username,
-                groups, password, permissions);
+                groups, password, permissions, Array.Empty<LegacyScreenAccess>());
         }
         catch
         {
             _token = "";
+            _legacyMode = false;
             return null;
         }
     }
 
-    public DashboardSummary GetDashboard() => Get<DashboardSummary>("api/dashboard");
+    public DashboardSummary GetDashboard()
+    {
+        if (!_legacyMode)
+            return Get<DashboardSummary>("api/dashboard");
 
-    public string GetReport(string kind) => GetJson("api/reports/" + kind);
+        var overview = Get<LegacyOverviewRow>("api/legacy/overview");
+        var cards = new List<MetricRow>
+        {
+            new("legacy.accounts", "الحسابات", overview.Accounts, 0),
+            new("legacy.customers", "العملاء", overview.Customers, 0),
+            new("legacy.suppliers", "الموردون", overview.Suppliers, 0),
+            new("legacy.items", "الأصناف", overview.Items, 0),
+            new("legacy.sales", "المبيعات", overview.Sales, 0),
+            new("legacy.purchases", "المشتريات", overview.Purchases, 0),
+            new("legacy.journals", "القيود", overview.JournalHeaders, 0)
+        };
+
+        var recent = Sales.Take(10)
+            .Select(x => new DashboardInvoiceRow(
+                x.Number, x.Party, x.Date.ToString("yyyy-MM-dd"), x.Amount, x.Status))
+            .ToList();
+
+        var activity = Journals.Take(10)
+            .Select(x => new DashboardActivityRow(x.Date, "قيد " + x.Number, "journal"))
+            .ToList();
+
+        return new DashboardSummary(cards, recent, activity);
+    }
+
+    public string GetReport(string kind)
+    {
+        if (!_legacyMode)
+            return GetJson("api/reports/" + kind);
+
+        var overview = Get<LegacyOverviewRow>("api/legacy/overview");
+        return JsonSerializer.Serialize(new
+        {
+            mode = "legacy",
+            database = "GtsDb2026",
+            report = kind,
+            generatedAt = DateTime.Now,
+            overview
+        }, _json);
+    }
 
     public void Refresh()
     {
         if (string.IsNullOrWhiteSpace(_token)) return;
+
+        if (_legacyMode)
+        {
+            RefreshLegacy();
+            return;
+        }
+
         var data = Get<List<JsonElement>>("api/sales");
         Sales.Clear();
         Sales.AddRange(data.Select(x => InvoiceFromJson(x)).Where(x => x is not null)!);
@@ -167,6 +279,103 @@ public sealed class AppStore
         Budgets.Clear(); Budgets.AddRange(budgets);
     }
 
+    private void RefreshLegacy()
+    {
+        Sales.Clear();
+        Purchases.Clear();
+        Items.Clear();
+        Customers.Clear();
+        Suppliers.Clear();
+        Accounts.Clear();
+        Companies.Clear();
+        Payments.Clear();
+        Journals.Clear();
+        Inventory.Clear();
+        Taxes.Clear();
+        Assets.Clear();
+        CostCenters.Clear();
+        Budgets.Clear();
+
+        if (HasPermission("sales.view"))
+        {
+            var rows = TryGet<List<LegacySalesRow>>("api/legacy/sales") ?? new();
+            Sales.AddRange(rows.Select(x => new InvoiceRow(
+                x.Id,
+                x.Id.ToString(),
+                string.IsNullOrWhiteSpace(x.PartyName) ? "" : x.PartyName,
+                x.Date ?? DateTime.MinValue,
+                x.Net,
+                "Legacy")));
+        }
+
+        if (HasPermission("purchases.view"))
+        {
+            var rows = TryGet<List<LegacyPurchaseRow>>("api/legacy/purchases") ?? new();
+            Purchases.AddRange(rows.Select(x => new InvoiceRow(
+                x.Id,
+                x.Id.ToString(),
+                x.SupplierName,
+                x.Date ?? DateTime.MinValue,
+                x.Net,
+                "Legacy")));
+        }
+
+        if (HasPermission("items.view"))
+        {
+            var rows = TryGet<List<LegacyItemRow>>("api/legacy/items") ?? new();
+            Items.AddRange(rows.Select(x => new ItemRow(
+                x.Id, x.Code, x.Name, x.AverageCost, x.SellPriceSmall)));
+        }
+
+        if (HasPermission("customers.view") || HasPermission("suppliers.view"))
+        {
+            var rows = TryGet<List<LegacyPartyRow>>("api/legacy/parties") ?? new();
+            if (HasPermission("customers.view"))
+                Customers.AddRange(rows.Where(x => x.IsCustomer).Select(x =>
+                    new CustomerRow(x.Id, x.Code?.ToString() ?? "", x.Name, x.Phone, 0)));
+            if (HasPermission("suppliers.view"))
+                Suppliers.AddRange(rows.Where(x => x.IsSupplier).Select(x =>
+                    new SupplierRow(x.Id, x.Code?.ToString() ?? "", x.Name, x.Phone, 0)));
+        }
+
+        if (HasPermission("accounts.view"))
+        {
+            var rows = TryGet<List<LegacyAccountRow>>("api/legacy/accounts") ?? new();
+            Accounts.AddRange(rows.Select(x =>
+                new AccountRow(x.Id, x.AccountNo?.ToString() ?? "", x.Name, "Legacy", x.PrivDebit - x.PrivCredit)));
+        }
+
+        if (HasPermission("journals.view"))
+        {
+            var rows = TryGet<List<LegacyJournalRow>>("api/legacy/journals") ?? new();
+            Journals.AddRange(rows.Select(x =>
+                new JournalRow(x.Id, x.DocCode ?? x.Id.ToString(), x.Date ?? DateTime.MinValue, x.Note, "Legacy")));
+        }
+    }
+
+    public bool HasPermission(string permission)
+        => _legacyMode
+            ? true && CurrentPermissions.Contains(permission, StringComparer.OrdinalIgnoreCase)
+            : CurrentPermissions.Contains(permission, StringComparer.OrdinalIgnoreCase);
+
+    private HashSet<string> CurrentPermissions { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+    private static LegacyScreenAccess ParseLegacyScreen(JsonElement x)
+        => new(
+            x.GetProperty("screenId").GetInt32(),
+            x.GetProperty("name").GetString() ?? "",
+            x.TryGetProperty("screenTypeId", out var sti) && sti.ValueKind != JsonValueKind.Null ? sti.GetInt32() : null,
+            x.TryGetProperty("screenNum", out var sn) && sn.ValueKind != JsonValueKind.Null ? sn.GetInt32() : null,
+            x.GetProperty("screenTypeName").GetString() ?? "",
+            x.GetProperty("isShow").GetBoolean(),
+            x.GetProperty("allowBranch").GetBoolean(),
+            x.GetProperty("allowEnter").GetBoolean(),
+            x.GetProperty("allowSave").GetBoolean(),
+            x.GetProperty("allowEdit").GetBoolean(),
+            x.GetProperty("allowDelete").GetBoolean(),
+            x.GetProperty("allowPrint").GetBoolean(),
+            x.GetProperty("allowExport").GetBoolean());
+
     private T Get<T>(string path)
     {
         using var request = new HttpRequestMessage(HttpMethod.Get, path);
@@ -201,6 +410,43 @@ public sealed class AppStore
         catch { return null; }
     }
 }
+
+public sealed record LegacyScreenAccess(
+    int ScreenId, string Name, int? ScreenTypeId, int? ScreenNum, string ScreenTypeName,
+    bool IsShow, bool AllowBranch, bool AllowEnter, bool AllowSave, bool AllowEdit,
+    bool AllowDelete, bool AllowPrint, bool AllowExport);
+
+public sealed record LegacyOverviewRow(
+    int Accounts, int Customers, int Suppliers, int Items, int Sales, int Purchases,
+    int JournalHeaders, int Users, int Groups, int Permissions, int Screens);
+
+public sealed record LegacyAccountRow(
+    int Id, int? AccountNo, string Name, string EnglishName, int? Level, int? FinalAccount,
+    int? AccountType, int? Nature, int? BranchId, decimal PrivDebit, decimal PrivCredit, int? Suspended);
+
+public sealed record LegacyPartyRow(
+    int Id, int? Code, int? AccountNo, int? BranchId, string Name, string VatNumber, string Phone,
+    bool IsCustomer, bool IsSupplier, decimal CreditLimit, decimal AlarmLimit);
+
+public sealed record LegacyItemRow(
+    int Id, string Code, string Name, string EnglishName, int? CategoryId, int? ClassId,
+    int? CompanyId, int? UnitSmall, decimal SellPriceSmall, decimal SellPriceMedium,
+    decimal SellpriceLarge, decimal LastCost, decimal AverageCost, bool IsTax,
+    decimal TaxValue, string VatCode);
+
+public sealed record LegacySalesRow(
+    int Id, int? BranchId, int? CreditNote, int? SupplierId, string PartyName, DateTime? Date,
+    decimal TotalPrices, decimal Tax, decimal Net, decimal Cash, decimal Bank, decimal Paid,
+    decimal Rest, int? UserId, int? YearId, int? ProjectId, string QrCode, string ElectronicInvoiceType);
+
+public sealed record LegacyPurchaseRow(
+    int Id, int? BranchId, int? SupplierId, string SupplierName, DateTime? Date,
+    decimal TotalPrices, decimal Tax, decimal Net, decimal Cash, decimal Bank,
+    int? CashAccount, int? BankAccount, int? UserId, int? YearId, int? ProjectId);
+
+public sealed record LegacyJournalRow(
+    int Id, int? ReferenceCode, int? TypeId, string DocCode, DateTime? Date, string Note,
+    int? BranchId, int? UserId, int? YearId, int? ProjectId, decimal Debit, decimal Credit);
 
 public sealed record InvoiceRow(long Id, string Number, string Party, DateTime Date, decimal Amount, string Status);
 public sealed record ItemRow(int Id, string Code, string Name, decimal StockQuantity, decimal SalePrice);
