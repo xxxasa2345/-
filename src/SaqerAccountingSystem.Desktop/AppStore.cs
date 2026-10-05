@@ -22,6 +22,8 @@ public sealed class AppStore
     private string _token = "";
     private bool _legacyMode;
     public int CurrentLegacyBranchId { get; private set; }
+    public bool IsLegacyMode => _legacyMode;
+    public string DataSourceName => _legacyMode ? "GtsDb2026" : "SaqerAccountingSystem";
 
     public AppStore()
     {
