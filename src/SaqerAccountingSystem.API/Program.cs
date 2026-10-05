@@ -183,8 +183,22 @@ app.MapPost("/api/items", async (Item input, AccountingDbContext db, HttpContext
     return Results.Created("/api/items/" + input.Id, input);
 }).RequirePermission("items.create");
 
-app.MapGet("/api/accounts", async (AccountingDbContext db) => Results.Ok(await db.Accounts.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync()))
-   .RequirePermission("accounts.view");
+app.MapGet("/api/accounts", async (AccountingDbContext db) =>
+{
+    var accounts = await db.Accounts.AsNoTracking().Where(x => x.IsActive).OrderBy(x => x.Code).ToListAsync();
+    var balances = await db.JournalLines.AsNoTracking()
+        .Where(x => x.JournalEntry.Status == DocumentStatus.Approved)
+        .GroupBy(x => x.AccountId)
+        .Select(g => new { g.Key, Debit = g.Sum(x => x.Debit), Credit = g.Sum(x => x.Credit) })
+        .ToDictionaryAsync(x => x.Key);
+    return Results.Ok(accounts.Select(a => new
+    {
+        id = a.Id, code = a.Code, name = a.Name, type = a.Type.ToString(),
+        balance = a.Type is AccountType.Asset or AccountType.Expense
+            ? (balances.TryGetValue(a.Id, out var b) ? b.Debit - b.Credit : 0m)
+            : (balances.TryGetValue(a.Id, out var b) ? b.Credit - b.Debit : 0m)
+    }));
+}).RequirePermission("accounts.view");
 app.MapPost("/api/accounts", async (Account input, AccountingDbContext db, HttpContext ctx) =>
 {
     input.Id = 0; db.Accounts.Add(input); await db.SaveChangesAsync();
@@ -302,6 +316,7 @@ app.MapPost("/api/sales/{id:long}/post", async (long id, InvoicePostRequest requ
         });
     }
 
+    invoice.IsPaid = request.IsPaid;
     var journalLines = new List<JournalLine>
     {
         new JournalLine { AccountId = invoice.IsPaid ? cash.Id : receivable.Id, Debit = invoice.Total, Credit = 0, Description = invoice.Number },
@@ -323,7 +338,6 @@ app.MapPost("/api/sales/{id:long}/post", async (long id, InvoicePostRequest requ
     try { AccountingRules.ValidateBalanced(journalLines.Sum(x => x.Debit), journalLines.Sum(x => x.Credit)); }
     catch (Exception ex) { return Results.BadRequest(new { message = ex.Message }); }
 
-    invoice.IsPaid = request.IsPaid;
     invoice.Status = request.IsPaid ? DocumentStatus.Paid : DocumentStatus.Approved;
     db.JournalEntries.Add(entry);
     await db.SaveChangesAsync();
