@@ -3,9 +3,11 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <RootNamespace>SaqerAccountingSystem.API</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SaqerAccountingSystem.Domain\SaqerAccountingSystem.Domain.csproj" />
+    <ProjectReference Include="..\SaqerAccountingSystem.Application\SaqerAccountingSystem.Application.csproj" />
+    <ProjectReference Include="..\SaqerAccountingSystem.Infrastructure\SaqerAccountingSystem.Infrastructure.csproj" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 </Project>
