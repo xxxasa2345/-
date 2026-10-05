@@ -110,17 +110,15 @@ public sealed class LoginForm : Form
         login.Click += (_, _) => Login();
         card.Controls.Add(login);
 
-        var demo = new Label
+        var info = new Label
         {
-            Text = "تجريبي:
-admin / admin123
-accountant / 123456",
+            Text = "الحسابات الأولية تُنشأ في قاعدة البيانات عند أول تشغيل.",
             Font = new Font("Tahoma", 9F),
             ForeColor = Theme.Muted,
             AutoSize = true,
             Location = new Point(28, 325)
         };
-        card.Controls.Add(demo);
+        card.Controls.Add(info);
 
         _error = new Label
         {
