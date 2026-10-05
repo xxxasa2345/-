@@ -200,6 +200,7 @@ public sealed class MainForm : Form
             "settings" => Settings(),
             "users" => UsersAndPermissions(),
             "legacy-screens" => LegacyScreens(),
+            "original-catalog" => OriginalGtsCatalog(),
             _ => new Label { Text = "الشاشة غير موجودة.", AutoSize = true }
         };
 
@@ -360,6 +361,35 @@ public sealed class MainForm : Form
         var screenPanel = GridScreen("صلاحيات المجموعة الحالية", rows);
         screenPanel.Dock = DockStyle.Fill;
         panel.Controls.Add(screenPanel);
+        return panel;
+    }
+
+    private Control OriginalGtsCatalog()
+    {
+        var panel = new Panel { BackColor = Theme.Background };
+        var header = new Label
+        {
+            Dock = DockStyle.Top,
+            Height = 75,
+            Text = "فهرس الشاشات الأصلية لـ GTS ERP\r\n" +
+                   "الشاشات المفهرسة: " + _store.OriginalScreens.Count +
+                   " — هذا الفهرس يطابق ملفات المصدر الأصلية التي تم تحليلها.",
+            Font = new Font("Tahoma", 12F, FontStyle.Bold),
+            TextAlign = ContentAlignment.MiddleRight
+        };
+        panel.Controls.Add(header);
+
+        var rows = _store.OriginalScreens.Select(x => new
+        {
+            الشاشة = x.Screen,
+            المسار = x.File,
+            Namespace = x.Namespace,
+            العناصر = x.Controls
+        }).ToArray();
+
+        var gridPanel = GridScreen("شاشات GTS الأصلية", rows);
+        gridPanel.Dock = DockStyle.Fill;
+        panel.Controls.Add(gridPanel);
         return panel;
     }
 
