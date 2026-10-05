@@ -79,7 +79,7 @@ public static class LegacyEndpointExtensions
 
         group.MapGet("/overview", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetOverviewAsync(ct)))
-            .RequireLegacyPermission("dashboard.view");
+            .RequireLegacySession();
 
         group.MapGet("/accounts", async (MajedSoftLegacyStore store, CancellationToken ct) =>
             Results.Ok(await store.GetAccountsAsync(ct)))
@@ -128,6 +128,16 @@ public static class LegacyEndpointExtensions
         });
 
         return group;
+    }
+
+    private static RouteHandlerBuilder RequireLegacySession(this RouteHandlerBuilder builder)
+    {
+        return builder.AddEndpointFilter(async (context, next) =>
+        {
+            if (context.HttpContext.Items["legacySession"] is not LegacySession)
+                return Results.Unauthorized();
+            return await next(context);
+        });
     }
 
     private static RouteHandlerBuilder RequireLegacyPermission(this RouteHandlerBuilder builder, string permission)
