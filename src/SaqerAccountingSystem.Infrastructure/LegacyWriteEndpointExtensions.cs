@@ -35,7 +35,7 @@ public static class LegacyWriteEndpointExtensions
         group.MapPost("/sales", async (
             LegacySaleWriteRequest request,
             HttpContext ctx,
-            MajedSoftLegacyWriteStore store,
+            Microsoft.Extensions.Configuration.IConfiguration config,
             CancellationToken ct) =>
         {
             if (!HasLegacyPermission(ctx, "sales.create"))
@@ -57,7 +57,7 @@ public static class LegacyWriteEndpointExtensions
         group.MapPost("/purchases", async (
             LegacyPurchaseWriteRequest request,
             HttpContext ctx,
-            MajedSoftLegacyWriteStore store,
+            Microsoft.Extensions.Configuration.IConfiguration config,
             CancellationToken ct) =>
         {
             if (!HasLegacyPermission(ctx, "purchases.create"))
