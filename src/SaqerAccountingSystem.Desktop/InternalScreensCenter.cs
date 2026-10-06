@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace SaqerAccountingSystem.Desktop;
 
-public sealed class InternalScreensCenter : Form
+public sealed class InternalScreensCenter : UserControl
 {
     private readonly AppStore _store;
     private readonly UserProfile _user;
@@ -17,11 +17,8 @@ public sealed class InternalScreensCenter : Form
     {
         _store = store;
         _user = user;
-        Text = "الشاشات الداخلية - صقر ERP";
-        WindowState = FormWindowState.Maximized;
-        MinimumSize = new Size(1100, 700);
+        Dock = DockStyle.Fill;
         RightToLeft = RightToLeft.Yes;
-        RightToLeftLayout = true;
         BackColor = Theme.Background;
         Build();
         LoadScreens();
@@ -75,7 +72,11 @@ public sealed class InternalScreensCenter : Form
         _screens.Dock = DockStyle.Fill;
         _screens.DisplayMember = nameof(ScreenEntry.Display);
         _screens.IntegralHeight = false;
-        Theme.StyleGridList(_screens);
+        _screens.Font = new Font("Tahoma", 9.5F);
+        _screens.BorderStyle = BorderStyle.FixedSingle;
+        _screens.BackColor = Color.White;
+        _screens.ForeColor = Theme.Text;
+        _screens.IntegralHeight = false;
         left.Controls.Add(_screens);
 
         search.TextChanged += (_, _) => LoadScreens(search.Text);
