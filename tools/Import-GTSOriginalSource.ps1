@@ -6,145 +6,101 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$resolvedRoot = (Resolve-Path $RepositoryRoot).Path
+$resolvedRoot = (Resolve-Path -LiteralPath $RepositoryRoot).Path
 
-if ([string]::IsNullOrWhiteSpace($Source)) {
-    $candidateRoots = Get-PSDrive -PSProvider FileSystem |
-        Where-Object { $_.Root -match '^[A-Z]:\\
-
-New-Item -ItemType Directory -Force -Path $target | Out-Null
-
-Write-Host "تم تحديد المصدر تلقائيًا: $resolvedSource" -ForegroundColor Green
-Write-Host "نسخ المصدر الأصلي..." -ForegroundColor Cyan
-Write-Host "من: $resolvedSource"
-Write-Host "إلى: $target"
-
-# No deletion is performed. Existing Saqer files are not touched.
-Get-ChildItem -LiteralPath $resolvedSource -Recurse -File |
-    Where-Object {
-        $_.Extension -in ".cs",".resx",".config",".xml",".json",".txt"
-    } |
-    ForEach-Object {
-        $relative = $_.FullName.Substring($resolvedSource.Length).TrimStart('\')
-        $destinationFile = Join-Path $target $relative
-        $destinationDir = Split-Path -Parent $destinationFile
-        New-Item -ItemType Directory -Force -Path $destinationDir | Out-Null
-        Copy-Item -LiteralPath $_.FullName -Destination $destinationFile -Force
-    }
-
-$count = (Get-ChildItem -LiteralPath $target -Recurse -File | Measure-Object).Count
-Write-Host "تم استيراد $count ملفًا." -ForegroundColor Green
-Write-Host "لم يتم حذف أي ملف من نظام صقر الحالي." -ForegroundColor Green
-
-Write-Host ""
-Write-Host "بعد مراجعة الملفات يمكنك تنفيذ:" -ForegroundColor Yellow
-Write-Host "git add src/Legacy/GTSErpSystemOriginal"
-Write-Host 'git commit -m "Import original GTS ERP source for real screen integration"'
-Write-Host "git push origin main"
- } |
-        Select-Object -ExpandProperty Root
-
+function Find-GtsSource {
     $candidates = New-Object System.Collections.Generic.List[string]
 
-    foreach ($drive in $candidateRoots) {
-        $patterns = @(
-            (Join-Path $drive "ماجد سوفت\MajedSoft 04-08-2026\App\SourceCode\GTSErpSystem"),
-            (Join-Path $drive "ماجد سوفت\MajedSoft 08-07-2026\App\SourceCode\GTSErpSystem"),
-            (Join-Path $drive "ماجد سوفت\MajedSoft 04-08-2026\App\GTSErpSystem_Source\GTSErpSystem"),
-            (Join-Path $drive "ماجد سوفت\MajedSoft 08-07-2026\App\GTSErpSystem_Source\GTSErpSystem")
+    $drives = Get-PSDrive -PSProvider FileSystem
+
+    foreach ($drive in $drives) {
+        $root = $drive.Root
+
+        $knownPaths = @(
+            (Join-Path $root "ماجد سوفت\MajedSoft 04-08-2026\App\SourceCode\GTSErpSystem"),
+            (Join-Path $root "ماجد سوفت\MajedSoft 08-07-2026\App\SourceCode\GTSErpSystem"),
+            (Join-Path $root "ماجد سوفت\MajedSoft 04-08-2026\App\GTSErpSystem_Source\GTSErpSystem"),
+            (Join-Path $root "ماجد سوفت\MajedSoft 08-07-2026\App\GTSErpSystem_Source\GTSErpSystem")
         )
-        foreach ($candidate in $patterns) {
-            if (Test-Path $candidate -PathType Container) {
-                $candidates.Add((Resolve-Path $candidate).Path)
+
+        foreach ($candidate in $knownPaths) {
+            try {
+                if (Test-Path -LiteralPath $candidate -PathType Container) {
+                    $full = (Resolve-Path -LiteralPath $candidate).Path
+                    if (-not $candidates.Contains($full)) {
+                        $candidates.Add($full)
+                    }
+                }
+            } catch {
             }
         }
     }
 
-    if ($candidates.Count -eq 0) {
-        $loose = Get-PSDrive -PSProvider FileSystem |
-            Where-Object { $_.Root -match '^[A-Z]:\\
-
-New-Item -ItemType Directory -Force -Path $target | Out-Null
-
-Write-Host "نسخ المصدر الأصلي..." -ForegroundColor Cyan
-Write-Host "من: $resolvedSource"
-Write-Host "إلى: $target"
-
-# No deletion is performed. Existing Saqer files are not touched.
-Get-ChildItem -LiteralPath $resolvedSource -Recurse -File |
-    Where-Object {
-        $_.Extension -in ".cs",".resx",".config",".xml",".json",".txt"
-    } |
-    ForEach-Object {
-        $relative = $_.FullName.Substring($resolvedSource.Length).TrimStart('\')
-        $destinationFile = Join-Path $target $relative
-        $destinationDir = Split-Path -Parent $destinationFile
-        New-Item -ItemType Directory -Force -Path $destinationDir | Out-Null
-        Copy-Item -LiteralPath $_.FullName -Destination $destinationFile -Force
+    if ($candidates.Count -gt 0) {
+        return $candidates[0]
     }
 
-$count = (Get-ChildItem -LiteralPath $target -Recurse -File | Measure-Object).Count
-Write-Host "تم استيراد $count ملفًا." -ForegroundColor Green
-Write-Host "لم يتم حذف أي ملف من نظام صقر الحالي." -ForegroundColor Green
+    Write-Host "Known GTS paths were not found. Searching for GTSErpSystem.csproj..." -ForegroundColor Yellow
 
-Write-Host ""
-Write-Host "بعد مراجعة الملفات يمكنك تنفيذ:" -ForegroundColor Yellow
-Write-Host "git add src/Legacy/GTSErpSystemOriginal"
-Write-Host 'git commit -m "Import original GTS ERP source for real screen integration"'
-Write-Host "git push origin main"
- } |
-            ForEach-Object {
-                try {
-                    Get-ChildItem -LiteralPath $_.Root -Filter "GTSErpSystem.csproj" -Recurse -File -ErrorAction SilentlyContinue |
-                        ForEach-Object { Split-Path -Parent $_.FullName }
-                } catch {}
+    foreach ($drive in $drives) {
+        try {
+            $projectFiles = Get-ChildItem -LiteralPath $drive.Root -Filter "GTSErpSystem.csproj" -Recurse -File -ErrorAction SilentlyContinue
+            foreach ($projectFile in $projectFiles) {
+                $folder = (Split-Path -Parent $projectFile.FullName)
+                if (Test-Path -LiteralPath $folder -PathType Container) {
+                    return (Resolve-Path -LiteralPath $folder).Path
+                }
             }
-        foreach ($item in $loose) {
-            if (Test-Path (Join-Path $item "GTSErpSystem.csproj")) {
-                $candidates.Add((Resolve-Path $item).Path)
-            }
+        } catch {
         }
     }
 
-    if ($candidates.Count -eq 0) {
-        throw "لم يتم العثور تلقائيًا على مصدر GTSErpSystem.csproj في أقراص الجهاز."
-    }
-
-    $Source = $candidates | Select-Object -Unique | Select-Object -First 1
+    return $null
 }
 
-$resolvedSource = (Resolve-Path $Source).Path
+if ([string]::IsNullOrWhiteSpace($Source)) {
+    $Source = Find-GtsSource
+    if ([string]::IsNullOrWhiteSpace($Source)) {
+        throw "GTSErpSystem.csproj was not found on any available drive."
+    }
+    Write-Host ("GTS source found automatically: " + $Source) -ForegroundColor Green
+}
+
+$resolvedSource = (Resolve-Path -LiteralPath $Source).Path
 $target = Join-Path $resolvedRoot $Destination
 
-if (-not (Test-Path $resolvedSource -PathType Container)) {
-    throw "لم يتم العثور على المصدر: $resolvedSource"
+if (-not (Test-Path -LiteralPath $resolvedSource -PathType Container)) {
+    throw ("Source folder not found: " + $resolvedSource)
 }
 
 New-Item -ItemType Directory -Force -Path $target | Out-Null
 
-Write-Host "نسخ المصدر الأصلي..." -ForegroundColor Cyan
-Write-Host "من: $resolvedSource"
-Write-Host "إلى: $target"
+Write-Host "Copying original GTS source files..." -ForegroundColor Cyan
+Write-Host ("FROM: " + $resolvedSource)
+Write-Host ("TO:   " + $target)
 
-# No deletion is performed. Existing Saqer files are not touched.
-Get-ChildItem -LiteralPath $resolvedSource -Recurse -File |
+$files = Get-ChildItem -LiteralPath $resolvedSource -Recurse -File |
     Where-Object {
-        $_.Extension -in ".cs",".resx",".config",".xml",".json",".txt"
-    } |
-    ForEach-Object {
-        $relative = $_.FullName.Substring($resolvedSource.Length).TrimStart('\')
-        $destinationFile = Join-Path $target $relative
-        $destinationDir = Split-Path -Parent $destinationFile
-        New-Item -ItemType Directory -Force -Path $destinationDir | Out-Null
-        Copy-Item -LiteralPath $_.FullName -Destination $destinationFile -Force
+        $_.Extension -in ".cs", ".resx", ".config", ".xml", ".json", ".txt"
     }
 
-$count = (Get-ChildItem -LiteralPath $target -Recurse -File | Measure-Object).Count
-Write-Host "تم استيراد $count ملفًا." -ForegroundColor Green
-Write-Host "لم يتم حذف أي ملف من نظام صقر الحالي." -ForegroundColor Green
+$count = 0
 
+foreach ($file in $files) {
+    $relative = $file.FullName.Substring($resolvedSource.Length).TrimStart("\")
+    $destinationFile = Join-Path $target $relative
+    $destinationDir = Split-Path -Parent $destinationFile
+
+    New-Item -ItemType Directory -Force -Path $destinationDir | Out-Null
+    Copy-Item -LiteralPath $file.FullName -Destination $destinationFile -Force
+    $count++
+}
+
+Write-Host ("Imported files: " + $count) -ForegroundColor Green
+Write-Host "No existing SaqerAccountingSystem files were deleted." -ForegroundColor Green
 Write-Host ""
-Write-Host "بعد مراجعة الملفات يمكنك تنفيذ:" -ForegroundColor Yellow
+Write-Host "Next commands:" -ForegroundColor Yellow
+Write-Host "git status"
 Write-Host "git add src/Legacy/GTSErpSystemOriginal"
-Write-Host 'git commit -m "Import original GTS ERP source for real screen integration"'
+Write-Host "git commit -m \"Import original GTS ERP source for real screen integration\""
 Write-Host "git push origin main"
