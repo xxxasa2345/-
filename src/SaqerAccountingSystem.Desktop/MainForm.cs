@@ -161,13 +161,13 @@ public sealed class MainForm : Form
         main.Controls.Add(_content);
     }
     private bool HasModuleAccess(ModuleInfo module)
-        => module.Key is "dashboard" or "legacy-screens"
+        => module.Key is "dashboard" or "legacy-screens" or "internal-screens"
             ? _user.Permissions.Count > 0
             : _user.Permissions.Contains(module.Permission, StringComparer.OrdinalIgnoreCase);
 
     private void ShowModule(string key)
     {
-        if (key != "dashboard" && key != "legacy-screens")
+        if (key != "dashboard" && key != "legacy-screens" && key != "internal-screens")
         {
             var moduleAccess = _store.Modules.FirstOrDefault(x => x.Key == key);
             if (moduleAccess is null || !_user.Permissions.Contains(moduleAccess.Permission, StringComparer.OrdinalIgnoreCase))
@@ -216,6 +216,7 @@ public sealed class MainForm : Form
             "users" => UsersAndPermissions(),
             "legacy-screens" => LegacyScreens(),
             "original-catalog" => OriginalGtsCatalog(),
+            "internal-screens" => InternalScreens(),
             _ => new Label { Text = "الشاشة غير موجودة.", AutoSize = true }
         };
 
@@ -460,6 +461,11 @@ public sealed class MainForm : Form
         gridPanel.Dock = DockStyle.Fill;
         panel.Controls.Add(gridPanel);
         return panel;
+    }
+
+    private Control InternalScreens()
+    {
+        return new InternalScreensCenter(_store, _user);
     }
 
     private Control LegacyScreens()
